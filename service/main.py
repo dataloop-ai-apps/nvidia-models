@@ -16,16 +16,10 @@ class ServiceRunner(dl.BaseServiceRunner):
         print("[INFO] downloading image...")
         filename = item.download()
         try:
-            subprocess.check_output(("detectnet_v2 inference"
-                                     " -e /model/inference_spec.txt"
-                                     f" -i {filename}"
-                                     f" -o {os.getcwd()}/res"
-                                     f" -k {self.key}").split(' '))
-            # os.system("detectnet_v2 inference"
-            #      " -e /model/inference_spec.txt"
-            #     f" -i {filename}"
-            #     f" -o {os.getcwd()}/res"
-            #     f" -k {self.key}")
+            with os.popen(
+                    f'detectnet_v2 inference -e /model/inference_spec.txt -i {filename} -o {os.getcwd()}/res -k {self.key}') as f:
+                output = f.read().strip()
+            print(output)
             with open(f'res/labels/{Path(filename).stem}.txt', 'r') as f:
                 for line in f.readlines():
                     vals = line.split(' ')
