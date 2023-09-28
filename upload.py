@@ -25,7 +25,7 @@ package = project.packages.push(package_name=f'tao-package',
                                                                     autoscaler=dl.KubernetesRabbitmqAutoscaler(
                                                                         min_replicas=1,
                                                                         max_replicas=1),
-                                                                    runner_image='docker.io/yakirinven/dataloop',
+                                                                    runner_image='shadimahameeddl/taoimage:latest',
                                                                     concurrency=1).to_json()},)
 
 service = package.services.deploy(service_name=package.name,
