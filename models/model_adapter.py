@@ -24,19 +24,27 @@ class TaoModelAdapter(dl.BaseModelAdapter):
             print("WARNING: invalid model_name in configuration")
 
     def predict(self, batch, **kwargs):
-        logger.info("[INFO] downloading image...")
-        filename = batch.download()
-        builder = batch.annotations.builder()
+        logger.info('predicting batch of size: {}'.format(len(batch)))
+        batch_annotations = []
+        logger.info(f'batch = {batch}')
+        for item in batch:
+            logger.info(f'item = {item}')
+            filename = item.download()
+            logger.info(filename)
+            os.replace(filename, 'tmp.jpg')
+            filename = 'tmp.jpg'
+            image_annotations = dl.AnnotationCollection()
+            try:
+                for annotation in self.tao_model.detect(filename):
+                    image_annotations.add(annotation_definition=annotation,
+                                          model_info={
+                                              'name': 'NVIDIA-TAO',
+                                              'confidence': 0.5
+                                          })
+                batch_annotations.append(image_annotations)
+            finally:
+                os.remove(filename)
+        return batch_annotations
 
-        try:
-            for annotation in self.tao_model.detect(filename):
-                builder.add(annotation)
-        finally:
-            os.remove(filename)
-
-        return builder
-
-    def predict_items(self, items, **kwargs):
-        for item in items:
-            builder = self.predict(batch=item)
-            item.annotations.upload(builder)
+    def prepare_item_func(self, item: dl.entities.Item):
+        return item

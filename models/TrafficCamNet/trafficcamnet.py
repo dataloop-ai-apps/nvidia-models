@@ -2,7 +2,10 @@ import os
 import logging
 import dtlpy as dl
 from pathlib import Path
-from ..tao_model import TaoModel
+try:
+    from ..tao_model import TaoModel
+except Exception:
+    from tao_model import TaoModel
 
 logger = logging.getLogger('[TrafficCamNet]')
 
@@ -30,6 +33,7 @@ class TrafficCamNet(TaoModel):
             return ret
         except Exception as e:
             logger.error(f"Error: {e}")
+            return []
 
     @staticmethod
     def get_name():
