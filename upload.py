@@ -25,7 +25,7 @@ package = project.packages.push(package_name=f'tao-package',
                                                                     autoscaler=dl.KubernetesRabbitmqAutoscaler(
                                                                         min_replicas=1,
                                                                         max_replicas=1),
-                                                                    runner_image='gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.1',
+                                                                    runner_image='gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2',
                                                                     concurrency=1).to_json()},)
 
 service = package.services.deploy(service_name=package.name,

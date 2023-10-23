@@ -31,7 +31,7 @@ def upload_models(project_name, dataset_name, tao_models: List[Type[TaoModel]]):
                                                                         autoscaler=dl.KubernetesRabbitmqAutoscaler(
                                                                             min_replicas=1,
                                                                             max_replicas=1),
-                                                                        runner_image='gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.1',
+                                                                        runner_image='gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2',
                                                                         concurrency=1).to_json()},
                                     metadata=metadata)
 
