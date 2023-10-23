@@ -2,6 +2,8 @@ import os
 import logging
 import dtlpy as dl
 from pathlib import Path
+import urllib.request
+
 try:
     from ..tao_model import TaoModel
 except Exception:
@@ -16,6 +18,17 @@ class TrafficCamNet(TaoModel):
         self.key = 'tlt_encode'
         self.res_dir = 'res'
         os.mkdir(self.res_dir)
+        # download model - the txt config file points to this location for the model
+        self.artifacts_path = f'/tmp/models/{self.get_name()}'
+        os.makedirs(self.artifacts_path, exist_ok=True)
+        urls = [
+            "https://storage.googleapis.com/model-mgmt-snapshots/nvidia/TrafficCamNet/inference_spec.txt",
+            "https://storage.googleapis.com/model-mgmt-snapshots/nvidia/TrafficCamNet/resnet18_trafficcamnet.tlt"
+        ]
+        for url in urls:
+            filepath = os.path.join(self.artifacts_path, os.path.basename(url))
+            print(filepath)
+            urllib.request.urlretrieve(url, filepath)
 
     def detect(self, image_path):
         ret = []
