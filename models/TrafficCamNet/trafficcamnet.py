@@ -16,28 +16,24 @@ class TrafficCamNet(TaoModel):
     def __init__(self):
         super().__init__()
         self.key = 'tlt_encode'
-        self.res_dir = 'res'
+        self.res_dir = 'trafficcamnet_res'
         os.mkdir(self.res_dir)
         # download model - the txt config file points to this location for the model
-        self.artifacts_path = f'/tmp/models/{self.get_name()}'
-        os.makedirs(self.artifacts_path, exist_ok=True)
-        urls = [
-            "https://storage.googleapis.com/model-mgmt-snapshots/nvidia/TrafficCamNet/inference_spec.txt",
-            "https://storage.googleapis.com/model-mgmt-snapshots/nvidia/TrafficCamNet/resnet18_trafficcamnet.tlt"
-        ]
-        for url in urls:
-            filepath = os.path.join(self.artifacts_path, os.path.basename(url))
-            print(filepath)
-            urllib.request.urlretrieve(url, filepath)
+        os.system(
+            'ngc registry model download-version "nvidia/tao/trafficcamnet:unpruned_v1.0" --dest /tmp/tao_models/')
+
+        if not os.path.isfile("/tmp/tao_models/trafficcamnet_vunpruned_v1.0/resnet18_trafficcamnet.tlt"):
+            raise Exception("Failed loading the model")
 
     def detect(self, image_path):
         ret = []
         try:
             with os.popen(
-                    f'detectnet_v2 inference -e /model/inference_spec.txt -i {image_path} -o {os.getcwd()}/{self.res_dir} -k {self.key}') as f:
+                    f'detectnet_v2 inference -e {os.getcwd()}/TrafficCamNet/inference_spec.txt -i {image_path} '
+                    f'-r {os.getcwd()}/{self.res_dir} -k {self.key}') as f:
                 output = f.read().strip()
             logger.info(f"Full Model Output:\n{output}")
-            with open(f'res/labels/{Path(image_path).stem}.txt', 'r') as f:
+            with open(f'{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
                 for line in f.readlines():
                     vals = line.split(' ')
                     if vals[0] == 'car':

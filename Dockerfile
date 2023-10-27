@@ -1,9 +1,12 @@
 FROM nvcr.io/nvidia/tao/tao-toolkit:5.0.0-tf1.15.5
 
-RUN pip3 install --user dtlpy
-RUN #chmod -R 777 /model
+RUN apt install unzip && \
+    wget "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip" -P /tmp/ngccli && \
+    unzip -u /tmp/ngccli/ngccli_cat_linux.zip -d /tmp/ngccli/
 
-ENV TLT_KEY=tlt_encode
+ENV PATH="/tmp/ngccli/ngc-cli/:$PATH"
+
+RUN pip3 install --user dtlpy
 
 ENV HOME="/tmp" \
     VS_CODE_VERSION="4.16.1"
