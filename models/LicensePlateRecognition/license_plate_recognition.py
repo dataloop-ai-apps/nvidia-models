@@ -1,8 +1,8 @@
 import os
 import logging
 import dtlpy as dl
-from pathlib import Path
 import shutil
+
 try:
     from ..tao_model import TaoModel
 except Exception:
@@ -28,20 +28,28 @@ class LPRNet(TaoModel):
         shutil.copyfile(f'{os.getcwd()}/LicensePlateRecognition/us_lp_characters.txt',
                         '/tmp/tao_models/lprnet_vtrainable_v1.0/us_lp_characters.txt')
 
-    def detect(self, image_path):
-        # TODO: Change "image_path" to "images_dir". this model crashes with a single image.
+    def detect(self, images_dir):
         ret = []
         try:
             with os.popen(
                     f'lprnet inference -e {os.getcwd()}/LicensePlateRecognition/lprnet_spec.txt '
-                    f'-i {image_path} -r {os.getcwd()}/{self.res_dir} -k {self.key} '
+                    f'-i {images_dir} -r {os.getcwd()}/{self.res_dir} -k {self.key} '
                     f'-m /tmp/tao_models/lprnet_vtrainable_v1.0/us_lprnet_baseline18_trainable.tlt') as f:
                 output_lines = f.readlines()
                 logger.info(f"Full Model Output:\n{''.join(output_lines)}")
-                res_lines = [res_line for res_line in output_lines if res_line.startswith(image_path)]
 
-                # results = [res.split(':')[1] for res in res_lines]
-                # dl.Text(...)
+                res_lines = [res_line for res_line in output_lines if
+                             res_line.startswith(tuple(os.listdir(images_dir)))]
+                results = {res.split(':')[0]: res.split(':')[1] for res in res_lines}
+                for image_path in os.listdir(images_dir):
+                    image_annotations = dl.AnnotationCollection()
+                    image_annotations.add(
+                        annotation_definition=dl.Note(0, 0, 100, 100, label=results[image_path]),
+                        model_info={
+                            'name': self.get_name(),
+                            'confidence': 0.5
+                        })
+                    ret.append(image_annotations)
 
             return ret
         except Exception as e:
@@ -58,4 +66,4 @@ class LPRNet(TaoModel):
 
     @staticmethod
     def get_output_type():
-        return dl.AnnotationType.TEXT
+        return dl.AnnotationType.NOTE

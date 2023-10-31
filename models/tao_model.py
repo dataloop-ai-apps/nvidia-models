@@ -6,7 +6,7 @@ class TaoModel(ABC):
         self.model_config = model_config
 
     @abstractmethod
-    def detect(self, image_path):
+    def detect(self, images_dir):
         pass
 
     @staticmethod
