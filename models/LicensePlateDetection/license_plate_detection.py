@@ -1,5 +1,6 @@
 import os
 import logging
+import subprocess
 import dtlpy as dl
 from pathlib import Path
 try:
@@ -18,8 +19,10 @@ class LPDNet(TaoModel):
         os.mkdir(self.res_dir)
 
         # download model - the txt config file points to this location for the model
-        os.system(
-            'ngc registry model download-version "nvidia/tao/lpdnet:unpruned_v2.1" --dest /tmp/tao_models/')
+        subprocess.Popen(['/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/lpdnet:unpruned_v2.1" --dest /tmp/tao_models/'],
+                         stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE, shell=True).wait()
 
         if not os.path.isfile("/tmp/tao_models/lpdnet_vunpruned_v2.1/yolov4_tiny_usa_trainable.tlt"):
             raise Exception("Failed loading the model")

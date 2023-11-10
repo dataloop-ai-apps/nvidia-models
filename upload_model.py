@@ -32,6 +32,9 @@ def upload_models(project_name, dataset_name, tao_models: List[Type[TaoModel]]):
                                                                             min_replicas=1,
                                                                             max_replicas=1),
                                                                         runner_image='gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2',
+                                                                        # this image contains ngc but not working...
+                                                                        # based on current Dockerfile:
+                                                                        # runner_image='docker.io/yakirinven/nvidia_tao:latest',
                                                                         concurrency=1).to_json()},
                                     metadata=metadata)
 
@@ -44,7 +47,9 @@ def upload_models(project_name, dataset_name, tao_models: List[Type[TaoModel]]):
                                           project_id=package.project.id,
                                           configuration={
                                               "model_name": tao_model.get_name(),
-                                              "model_config": tao_model.get_default_model_configuration()
+                                              "model_config": tao_model.get_default_model_configuration(),
+                                              "ngc_api_key": "<YOUR API KEY>",
+                                              "ngc_org": "<YOUR ORG>",
                                           },
                                           model_artifacts=[],
                                           labels=tao_model.get_labels(),

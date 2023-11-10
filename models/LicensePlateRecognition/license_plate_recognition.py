@@ -1,5 +1,6 @@
 import os
 import logging
+import subprocess
 import dtlpy as dl
 import shutil
 
@@ -19,8 +20,10 @@ class LPRNet(TaoModel):
         os.mkdir(self.res_dir)
 
         # download model - the txt config file points to this location for the model
-        os.system(
-            'ngc registry model download-version "nvidia/tao/lprnet:trainable_v1.0" --dest /tmp/tao_models/')
+        subprocess.Popen(['/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/lprnet:trainable_v1.0" --dest /tmp/tao_models/'],
+                         stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE, shell=True).wait()
 
         if not os.path.isfile("/tmp/tao_models/lprnet_vtrainable_v1.0/us_lprnet_baseline18_trainable.tlt"):
             raise Exception("Failed loading the model")
