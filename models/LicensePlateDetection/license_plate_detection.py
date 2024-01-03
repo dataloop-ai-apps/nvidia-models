@@ -16,7 +16,7 @@ class LPDNet(TaoModel):
         super().__init__()
         self.key = 'nvidia_tlt'
         self.res_dir = 'lpd_res'
-        os.mkdir(self.res_dir)
+        os.makedirs(self.res_dir, exist_ok=True)
 
         # download model - the txt config file points to this location for the model
         subprocess.Popen(['/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/lpdnet:unpruned_v2.1" --dest /tmp/tao_models/'],
@@ -31,8 +31,11 @@ class LPDNet(TaoModel):
         ret = []
         try:
             with os.popen(
-                    f'yolo_v4_tiny inference -e {os.getcwd()}/LicensePlateDetection/yolo_v4_tiny_retrain_kitti.txt '
-                    f'-i {images_dir} -r {os.getcwd()}/{self.res_dir} -k {self.key} '
+                    f'yolo_v4_tiny inference '
+                    f'-e {os.getcwd()}/models/LicensePlateDetection/yolo_v4_tiny_retrain_kitti.txt '
+                    f'-i {images_dir} '
+                    f'-r {os.getcwd()}/{self.res_dir} '
+                    f'-k {self.key} '
                     f'-m /tmp/tao_models/lpdnet_vunpruned_v2.1/yolov4_tiny_usa_trainable.tlt') as f:
                 output = f.read().strip()
             logger.info(f"Full Model Output:\n{output}")

@@ -3,6 +3,7 @@ import logging
 import shutil
 import subprocess
 import dtlpy as dl
+import json
 
 try:
     from models.all_models import models
@@ -33,8 +34,14 @@ class TaoModelAdapter(dl.BaseModelAdapter):
                                    stdin=subprocess.PIPE,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, shell=True)
-        inputdata = self.configuration["ngc_api_key"].encode() + b'\n\n' + \
-                    self.configuration["ngc_org"].encode() + b'\n\n\n'
+        logger.info(f'Loading api configs from {os.getcwd()}: content: {os.listdir(os.getcwd())}')
+        with open(f'models/api_configs.json', 'r') as f:
+            _configuration = json.load(f)
+
+        inputdata = _configuration["ngc_api_key"].encode() + b'\n\n' + \
+                    _configuration["ngc_org"].encode() + b'\n\n\n'
+        # inputdata = self.configuration["ngc_api_key"].encode() + b'\n\n' + \
+        #             self.configuration["ngc_org"].encode() + b'\n\n\n'
         process.communicate(input=inputdata)
         os.makedirs('/tmp/tao_models', exist_ok=True)
 
@@ -59,9 +66,9 @@ class TaoModelAdapter(dl.BaseModelAdapter):
         os.mkdir(self.images_path)
         for i, item in enumerate(batch):
             logger.info(f'item = {item}')
-            item.download(local_path=os.path.join(self.images_path, f'image_{i:020}.jpg'), to_items_folder=False)
-
+            item.download(local_path=self.images_path)
         try:
+            logger.info("*** images path: {}".format(self.images_path))
             return self.tao_model.detect(self.images_path)
         finally:
             shutil.rmtree(self.images_path)

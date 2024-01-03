@@ -18,27 +18,34 @@ class TrafficCamNet(TaoModel):
         super().__init__()
         self.key = 'tlt_encode'
         self.res_dir = 'trafficcamnet_res'
-        os.mkdir(self.res_dir)
+        os.makedirs(self.res_dir, exist_ok=True)
         # download model - the txt config file points to this location for the model
-        subprocess.Popen(['/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/trafficcamnet:unpruned_v1.0" --dest /tmp/tao_models/'],
-                         stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE, shell=True).wait()
+        subprocess.Popen([
+            '/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/trafficcamnet:unpruned_v1.0" --dest /tmp/tao_models/'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, shell=True).wait()
         if not os.path.isfile("/tmp/tao_models/trafficcamnet_vunpruned_v1.0/resnet18_trafficcamnet.tlt"):
             raise Exception("Failed loading the model")
 
     def detect(self, images_dir):
         ret = []
         try:
+            logger.info(f"Running detectnet_v2 inference on {images_dir}, Content {os.listdir(images_dir)}")
+            os.makedirs(f'{os.getcwd()}/{self.res_dir}', exist_ok=True)
             with os.popen(
-                    f'detectnet_v2 inference -e {os.getcwd()}/TrafficCamNet/inference_spec.txt -i {images_dir} '
-                    f'-r {os.getcwd()}/{self.res_dir} -k {self.key}') as f:
+                    f'detectnet_v2 inference '
+                    f'-e {os.getcwd()}/models/TrafficCamNet/inference_spec.txt '
+                    f'-i {images_dir} '
+                    f'-r {os.getcwd()}/{self.res_dir} '
+                    f'-k {self.key}') as f:
                 output = f.read().strip()
             logger.info(f"Full Model Output:\n{output}")
-
             for image_path in os.listdir(images_dir):
                 image_annotations = dl.AnnotationCollection()
-                with open(f'{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
+                logger.info(f"**** res dir {os.getcwd()}/{self.res_dir}")
+                logger.info(f"**** res dir content {os.listdir(f'{os.getcwd()}/{self.res_dir}')}")
+                with open(f'{os.getcwd()}/{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
                     for line in f.readlines():
                         vals = line.split(' ')
                         if vals[0] == 'car':

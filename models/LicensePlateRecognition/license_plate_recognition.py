@@ -17,7 +17,7 @@ class LPRNet(TaoModel):
         super().__init__()
         self.key = 'nvidia_tlt'
         self.res_dir = 'lpr_res'
-        os.mkdir(self.res_dir)
+        os.makedirs(self.res_dir, exist_ok=True)
 
         # download model - the txt config file points to this location for the model
         subprocess.Popen(['/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/lprnet:trainable_v1.0" --dest /tmp/tao_models/'],
@@ -28,15 +28,18 @@ class LPRNet(TaoModel):
         if not os.path.isfile("/tmp/tao_models/lprnet_vtrainable_v1.0/us_lprnet_baseline18_trainable.tlt"):
             raise Exception("Failed loading the model")
 
-        shutil.copyfile(f'{os.getcwd()}/LicensePlateRecognition/us_lp_characters.txt',
+        shutil.copyfile(f'{os.getcwd()}/models/LicensePlateRecognition/us_lp_characters.txt',
                         '/tmp/tao_models/lprnet_vtrainable_v1.0/us_lp_characters.txt')
 
     def detect(self, images_dir):
         ret = []
         try:
             with os.popen(
-                    f'lprnet inference -e {os.getcwd()}/LicensePlateRecognition/lprnet_spec.txt '
-                    f'-i {images_dir} -r {os.getcwd()}/{self.res_dir} -k {self.key} '
+                    f'lprnet inference '
+                    f'-e {os.getcwd()}/models/LicensePlateRecognition/lprnet_spec.txt '
+                    f'-i {images_dir} '
+                    f'-r {os.getcwd()}/{self.res_dir} '
+                    f'-k {self.key} '
                     f'-m /tmp/tao_models/lprnet_vtrainable_v1.0/us_lprnet_baseline18_trainable.tlt') as f:
                 output_lines = f.readlines()
                 logger.info(f"Full Model Output:\n{''.join(output_lines)}")
