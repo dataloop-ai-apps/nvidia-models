@@ -25,7 +25,7 @@ class PeopleNet(TaoModel):
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE, shell=True).wait()
-        if not os.path.isfile("/tmp/tao_models/peoplenet_trainable_v2.5/resnet34_peoplenet.tlt"):
+        if not os.path.isfile("/tmp/tao_models/peoplenet_vtrainable_v2.5/resnet34_peoplenet.tlt"):
             raise Exception("Failed loading the model")
 
     def detect(self, images_dir):

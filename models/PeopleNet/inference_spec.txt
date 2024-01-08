@@ -13,7 +13,7 @@ inferencer_config{
   gpu_index: 0
   # model handler config
   tlt_config{
-    model: "/tmp/tao_models/peoplenet_trainable_v2.5/resnet34_peoplenet.tlt"
+    model: "/tmp/tao_models/peoplenet_vtrainable_v2.5/resnet34_peoplenet.tlt"
   }
 }
 bbox_handler_config{
