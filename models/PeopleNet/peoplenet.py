@@ -17,7 +17,7 @@ class PeopleNet(TaoModel):
     def __init__(self):
         super().__init__()
         self.key = 'tlt_encode'
-        self.res_dir = 'poplenet_res'
+        self.res_dir = 'peoplenet_res'
         os.makedirs(self.res_dir, exist_ok=True)
         # download model - the txt config file points to this location for the model
         subprocess.Popen([
