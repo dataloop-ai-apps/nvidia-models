@@ -50,8 +50,55 @@ class TrafficCamNet(TaoModel):
                         vals = line.split(' ')
                         if vals[0] == 'car':
                             image_annotations.add(
-                                annotation_definition=dl.Box(label='car', top=vals[5], left=vals[4], bottom=vals[7],
-                                                             right=vals[6]),
+                                annotation_definition=dl.Box(
+                                    label='car',
+                                    top=vals[5],
+                                    left=vals[4],
+                                    bottom=vals[7],
+                                    right=vals[6]
+                                ),
+                                model_info={
+                                    'name': self.get_name(),
+                                    'confidence': 0.5
+                                })
+                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                        if vals[0] == 'bicycle':
+                            image_annotations.add(
+                                annotation_definition=dl.Box(
+                                    label='bicycle',
+                                    top=vals[5],
+                                    left=vals[4],
+                                    bottom=vals[7],
+                                    right=vals[6]
+                                ),
+                                model_info={
+                                    'name': self.get_name(),
+                                    'confidence': 0.5
+                                })
+                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                        if vals[0] == 'person':
+                            image_annotations.add(
+                                annotation_definition=dl.Box(
+                                    label='person',
+                                    top=vals[5],
+                                    left=vals[4],
+                                    bottom=vals[7],
+                                    right=vals[6]
+                                ),
+                                model_info={
+                                    'name': self.get_name(),
+                                    'confidence': 0.5
+                                })
+                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                        if vals[0] == 'road_sign':
+                            image_annotations.add(
+                                annotation_definition=dl.Box(
+                                    label='road_sign',
+                                    top=vals[5],
+                                    left=vals[4],
+                                    bottom=vals[7],
+                                    right=vals[6]
+                                ),
                                 model_info={
                                     'name': self.get_name(),
                                     'confidence': 0.5
@@ -69,7 +116,7 @@ class TrafficCamNet(TaoModel):
 
     @staticmethod
     def get_labels():
-        return ['car']
+        return ['car', 'bicycle', 'person', 'road_sign']
 
     @staticmethod
     def get_output_type():
