@@ -105,7 +105,7 @@ class PeopleNet(TaoModel):
 
     @staticmethod
     def get_labels():
-        return ['person']
+        return ['person', 'bag', 'face']
 
     @staticmethod
     def get_output_type():
