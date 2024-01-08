@@ -62,8 +62,11 @@ def upload_models(project_name, dataset_name, tao_model):
 
 
 def main():
+    project_name = "Nvidia Demo"
+    dataset_name = "Nvidia"
+
     for tao_model in models:
-        upload_models('Nvidia Demo', 'Nvidia', tao_model=tao_model)
+        upload_models(project_name=project_name, dataset_name=dataset_name, tao_model=tao_model)
 
 
 if __name__ == '__main__':
