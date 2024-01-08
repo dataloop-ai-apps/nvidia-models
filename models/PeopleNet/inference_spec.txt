@@ -26,9 +26,47 @@ bbox_handler_config{
       confidence_model: "aggregate_cov"
       output_map: "person"
       bbox_color{
+        R: 255
+        G: 0
+        B: 0
+      }
+      clustering_config{
+        coverage_threshold: 0.005
+        dbscan_eps: 0.3
+        # dbscan_min_samples: 0.05
+        dbscan_confidence_threshold: 0.9
+        minimum_bounding_box_height: 4
+      }
+    }
+  }
+  classwise_bbox_handler_config{
+    key:"bag"
+    value: {
+      confidence_model: "aggregate_cov"
+      output_map: "bag"
+      bbox_color{
         R: 0
         G: 255
         B: 0
+      }
+      clustering_config{
+        coverage_threshold: 0.005
+        dbscan_eps: 0.3
+        # dbscan_min_samples: 0.05
+        dbscan_confidence_threshold: 0.9
+        minimum_bounding_box_height: 4
+      }
+    }
+  }
+  classwise_bbox_handler_config{
+    key:"face"
+    value: {
+      confidence_model: "aggregate_cov"
+      output_map: "face"
+      bbox_color{
+        R: 0
+        G: 0
+        B: 255
       }
       clustering_config{
         coverage_threshold: 0.005
@@ -45,8 +83,8 @@ bbox_handler_config{
       confidence_model: "aggregate_cov"
       bbox_color{
         R: 255
-        G: 0
-        B: 0
+        G: 255
+        B: 255
       }
       clustering_config{
         coverage_threshold: 0.005

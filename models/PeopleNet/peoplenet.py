@@ -63,6 +63,36 @@ class PeopleNet(TaoModel):
                                 }
                             )
                             logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                        if vals[0] == 'bag':
+                            image_annotations.add(
+                                annotation_definition=dl.Box(
+                                    label='bag',
+                                    top=vals[5],
+                                    left=vals[4],
+                                    bottom=vals[7],
+                                    right=vals[6]
+                                ),
+                                model_info={
+                                    'name': self.get_name(),
+                                    'confidence': 0.5
+                                }
+                            )
+                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                        if vals[0] == 'face':
+                            image_annotations.add(
+                                annotation_definition=dl.Box(
+                                    label='face',
+                                    top=vals[5],
+                                    left=vals[4],
+                                    bottom=vals[7],
+                                    right=vals[6]
+                                ),
+                                model_info={
+                                    'name': self.get_name(),
+                                    'confidence': 0.5
+                                }
+                            )
+                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
                 ret.append(image_annotations)
             return ret
         except Exception as e:
