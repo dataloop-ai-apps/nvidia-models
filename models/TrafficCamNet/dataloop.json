@@ -74,7 +74,7 @@
     "trafficcamnet": {
       "type": "model",
       "spec": {
-        "name": "trafficcamnet",
+        "name": "nv-traffic-cam-net-model",
         "moduleName": "trafficcamnet-module",
         "scope": "project",
         "status": "trained",

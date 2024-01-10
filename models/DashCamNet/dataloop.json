@@ -1,6 +1,6 @@
 {
   "name": "dashcamnet-app",
-  "description": "An app to install the DashCamNet model. The model card detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles.",
+  "description": "An app to install the DashCamNet model. The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles.",
   "categories": [],
   "displayName": "dashcamnet App",
   "version": "v0.1.0",
@@ -29,13 +29,13 @@
         }
       }
     },
-    "trafficcamnet-module": {
+    "dashcamnet-module": {
       "type": "module",
       "spec": {
-        "name": "trafficcamnet-module",
-        "entryPoint": "trafficcamnet.py",
-        "className": "TrafficCamNet",
-        "computeConfig": "trafficcamnet-deploy",
+        "name": "dashcamnet-module",
+        "entryPoint": "dashcamnet.py",
+        "className": "DashCamNet",
+        "computeConfig": "dashcamnet-deploy",
         "initInputs": [
           {
             "type": "Model",
@@ -71,15 +71,15 @@
         ]
       }
     },
-    "trafficcamnet": {
+    "dashcamnet": {
       "type": "model",
       "spec": {
-        "name": "trafficcamnet",
-        "moduleName": "trafficcamnet-module",
+        "name": "nv-dash-cam-net-model",
+        "moduleName": "dashcamnet-module",
         "scope": "project",
         "status": "trained",
         "configuration": {
-          "model_name": "traffic-cam-net",
+          "model_name": "dash-cam-net",
           "model_config": {}
         },
         "inputType": "image",

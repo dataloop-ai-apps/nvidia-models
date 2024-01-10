@@ -1,8 +1,8 @@
 {
-  "name": "facedetectir-app",
-  "description": "An app to install the FaceDetectIR model. The model detects one or more faces in the given image / video. Compared to the PeopleNet model, this model gives better results detecting large faces, such as faces in webcam images.",
+  "name": "lpr-net-app",
+  "description": "An app to install the License Plate Detection (LPDNet) model. The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images.",
   "categories": [],
-  "displayName": "facedetectir App",
+  "displayName": "lpr-net App",
   "version": "v0.1.0",
   "scope": "project",
   "codebaseZ": {
@@ -11,10 +11,10 @@
     "gitTag": "v0.1.0"
   },
   "components": {
-    "facedetectir-deploy": {
+    "lpr-net-deploy": {
       "type": "computeConfig",
       "spec": {
-        "name": "facedetectir-deploy",
+        "name": "lpr-net-deploy",
         "runtime": {
           "podType": "gpu-t4",
           "concurrency": 1,
@@ -29,13 +29,13 @@
         }
       }
     },
-    "facedetectir-module": {
+    "lpr-net-module": {
       "type": "module",
       "spec": {
-        "name": "facedetectir-module",
-        "entryPoint": "facedetectir.py",
-        "className": "FaceDetectIR",
-        "computeConfig": "facedetectir-deploy",
+        "name": "lpr-net-module",
+        "entryPoint": "license_plate_recognition.py",
+        "className": "LPRNet",
+        "computeConfig": "lpr-net-deploy",
         "initInputs": [
           {
             "type": "Model",
@@ -71,21 +71,21 @@
         ]
       }
     },
-    "facedetectir": {
+    "lpr-net": {
       "type": "model",
       "spec": {
-        "name": "nv-face-detect-ir-model",
-        "moduleName": "facedetectir-module",
+        "name": "nv-lpr-net-model",
+        "moduleName": "lpr-net-module",
         "scope": "project",
         "status": "trained",
         "configuration": {
-          "model_name": "face-detect-ir",
+          "model_name": "lpr-net",
           "model_config": {}
         },
         "inputType": "image",
         "outputType": "box",
         "metadata": {},
-        "description": "The model detects one or more faces in the given image / video. Compared to the PeopleNet model, this model gives better results detecting large faces, such as faces in webcam images."
+        "description": "The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images."
       }
     }
   }

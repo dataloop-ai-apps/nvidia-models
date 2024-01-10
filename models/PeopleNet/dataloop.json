@@ -74,7 +74,7 @@
     "peoplenet": {
       "type": "model",
       "spec": {
-        "name": "peoplenet",
+        "name": "nv-people-net-model",
         "moduleName": "peoplenet-module",
         "scope": "project",
         "status": "trained",
