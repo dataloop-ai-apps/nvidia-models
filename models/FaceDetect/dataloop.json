@@ -33,8 +33,8 @@
       "type": "module",
       "spec": {
         "name": "facedetect-module",
-        "entryPoint": "facedetect.py",
-        "className": "FaceDetect",
+        "entryPoint": "facenet.py",
+        "className": "FaceNet",
         "computeConfig": "facedetect-deploy",
         "initInputs": [
           {
