@@ -31,10 +31,10 @@ class PointPillarNet(TaoModel):
     def detect(self, images_dir):
         ret = []
         try:
-            logger.info(f"Running detectnet_v2 inference on {images_dir}, Content {os.listdir(images_dir)}")
+            logger.info(f"Running pointpillars inference on {images_dir}, Content {os.listdir(images_dir)}")
             os.makedirs(f'{os.getcwd()}/{self.res_dir}', exist_ok=True)
             with os.popen(
-                    f'detectnet_v2 inference '
+                    f'pointpillars inference '
                     f'-e {os.getcwd()}/models/PointPillarNet/inference_spec.txt '
                     f'-i {images_dir} '
                     f'-r {os.getcwd()}/{self.res_dir} '
