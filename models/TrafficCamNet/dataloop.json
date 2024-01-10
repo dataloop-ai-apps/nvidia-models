@@ -1,5 +1,6 @@
 {
   "name": "trafficcamnet-app",
+  "description": "An app to install the TrafficCamNet model. The model described in this card detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycle.",
   "categories": [],
   "displayName": "trafficcamnet App",
   "version": "v0.1.0",
@@ -47,12 +48,25 @@
             "input": [
               {
                 "type": "Item[]",
-                "name": "items"
+                "name": "items",
+                "description": "The input images for prediction."
               }
             ],
-            "output": [],
+            "output": [
+              {
+                "type": "Item[]",
+                "name": "items",
+                "description": "The same input images for prediction."
+              },
+              {
+                "type": "Annotations[]",
+                "name": "annotations",
+                "description": "The predicted annotations."
+              }
+            ],
             "displayName": "Predict Items",
-            "displayIcon": ""
+            "displayIcon": "",
+            "description": "The inference function of the model."
           }
         ]
       }
@@ -70,7 +84,8 @@
         },
         "inputType": "image",
         "outputType": "box",
-        "metadata": {}
+        "metadata": {},
+        "description": "The model described in this card detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycle."
       }
     }
   }
