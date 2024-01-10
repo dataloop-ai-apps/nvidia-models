@@ -4,7 +4,7 @@
 
 ![1.png](assets%2F1.png)
 
-## More detailed guide:
+## Detailed guide:
 
 1. Sign up for NVIDIA NGC: https://ngc.nvidia.com/signin
 
