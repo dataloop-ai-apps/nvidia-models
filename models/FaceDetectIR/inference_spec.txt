@@ -3,8 +3,8 @@ inferencer_config{
   # Note: This must be mentioned in order of the networks classes.
   target_classes: "face"
   # Inference dimensions.
-  image_width:  960
-  image_height: 544
+  image_width:  384
+  image_height: 240
   # Must match what the model was trained for.
   image_channels: 3
   batch_size: 1
