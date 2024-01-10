@@ -1,6 +1,6 @@
 {
   "name": "peoplenet-app",
-  "description": "An app to install the PeopleNet model. The Peoplenet model detects persons, bags, and faces in an image.",
+  "description": "An app to install the PeopleNet model. The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use.",
   "categories": [],
   "displayName": "peoplenet App",
   "version": "v0.1.0",
@@ -85,7 +85,7 @@
         "inputType": "image",
         "outputType": "box",
         "metadata": {},
-        "description": "The Peoplenet model detects persons, bags, and faces in an image."
+        "description": "The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use."
       }
     }
   }

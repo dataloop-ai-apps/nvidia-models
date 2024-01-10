@@ -1,5 +1,6 @@
 {
   "name": "facedetectir-app",
+  "description": "An app to install the FaceDetectIR model. The model described in this card detects one or more faces in the given image / video. Compared to the PeopleNet model, this model gives better results detecting large faces, such as faces in webcam images.",
   "categories": [],
   "displayName": "facedetectir App",
   "version": "v0.1.0",
@@ -47,12 +48,25 @@
             "input": [
               {
                 "type": "Item[]",
-                "name": "items"
+                "name": "items",
+                "description": "The input images for prediction."
               }
             ],
-            "output": [],
+            "output": [
+              {
+                "type": "Item[]",
+                "name": "items",
+                "description": "The same input images for prediction."
+              },
+              {
+                "type": "Annotations[]",
+                "name": "annotations",
+                "description": "The predicted annotations."
+              }
+            ],
             "displayName": "Predict Items",
-            "displayIcon": ""
+            "displayIcon": "",
+            "description": "The inference function of the model."
           }
         ]
       }
@@ -70,7 +84,8 @@
         },
         "inputType": "image",
         "outputType": "box",
-        "metadata": {}
+        "metadata": {},
+        "description": "The model described in this card detects one or more faces in the given image / video. Compared to the PeopleNet model, this model gives better results detecting large faces, such as faces in webcam images."
       }
     }
   }
