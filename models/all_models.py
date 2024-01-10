@@ -19,6 +19,7 @@ except Exception:
 
 models = [
     DashCamNet,
+    FaceDetect,
     FaceDetectIR,
     LPDNet,
     LPRNet,
