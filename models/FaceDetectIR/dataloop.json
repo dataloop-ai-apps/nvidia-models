@@ -1,0 +1,77 @@
+{
+  "name": "facedetectir-app",
+  "categories": [],
+  "displayName": "facedetectir App",
+  "version": "v0.1.0",
+  "scope": "project",
+  "codebaseZ": {
+    "type": "git",
+    "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
+    "gitTag": "v0.1.0"
+  },
+  "components": {
+    "facedetectir-deploy": {
+      "type": "computeConfig",
+      "spec": {
+        "name": "facedetectir-deploy",
+        "runtime": {
+          "podType": "gpu-t4",
+          "concurrency": 1,
+          "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2",
+          "autoscaler": {
+            "type": "rabbitmq",
+            "minReplicas": 0,
+            "maxReplicas": 2,
+            "queueLength": 1000
+          },
+          "preemptible": false
+        }
+      }
+    },
+    "facedetectir-module": {
+      "type": "module",
+      "spec": {
+        "name": "facedetectir-module",
+        "entryPoint": "facedetectir.py",
+        "className": "FaceDetectIR",
+        "computeConfig": "facedetectir-deploy",
+        "initInputs": [
+          {
+            "type": "Model",
+            "name": "model_entity"
+          }
+        ],
+        "functions": [
+          {
+            "name": "predict_items",
+            "input": [
+              {
+                "type": "Item[]",
+                "name": "items"
+              }
+            ],
+            "output": [],
+            "displayName": "Predict Items",
+            "displayIcon": ""
+          }
+        ]
+      }
+    },
+    "facedetectir": {
+      "type": "model",
+      "spec": {
+        "name": "facedetectir",
+        "moduleName": "facedetectir-module",
+        "scope": "project",
+        "status": "trained",
+        "configuration": {
+          "model_name": "face-detect-ir",
+          "model_config": {}
+        },
+        "inputType": "image",
+        "outputType": "box",
+        "metadata": {}
+      }
+    }
+  }
+}
