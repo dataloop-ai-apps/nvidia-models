@@ -10,27 +10,28 @@ try:
 except Exception:
     from tao_model import TaoModel
 
-logger = logging.getLogger('[FaceDetect]')
+logger = logging.getLogger('[FaceNet]')
 
 
-class FaceDetect(TaoModel):
+class FaceNet(TaoModel):
     def __init__(self, **model_config):
         super().__init__(**model_config)
         self.key = 'tlt_encode'
-        self.res_dir = 'facedetect_res'
+        self.res_dir = 'facenet_res'
         os.makedirs(self.res_dir, exist_ok=True)
         # download model - the txt config file points to this location for the model
         subprocess.Popen([
-            '/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/facedetect:unpruned_v2.0" --dest /tmp/tao_models/'],
+            '/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/facenet:unpruned_v2.0" --dest /tmp/tao_models/'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE, shell=True).wait()
-        if not os.path.isfile("/tmp/tao_models/facedetect_vunpruned_v2.0/model.tlt"):
+        if not os.path.isfile("/tmp/tao_models/facenet_vunpruned_v2.0/model.tlt"):
             raise Exception("Failed loading the model")
 
     def detect(self, images_dir):
         ret = []
         try:
+            # TODO: Find the correct model to load model.tlt
             logger.info(f"Running detectnet_v2 inference on {images_dir}, Content {os.listdir(images_dir)}")
             os.makedirs(f'{os.getcwd()}/{self.res_dir}', exist_ok=True)
             with os.popen(
@@ -65,7 +66,7 @@ class FaceDetect(TaoModel):
 
     @staticmethod
     def get_name():
-        return "face-detect"
+        return "face-net"
 
     @staticmethod
     def get_labels():

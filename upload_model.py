@@ -62,6 +62,7 @@ def upload_models(project_name, dataset_name, tao_model):
 
 
 def main():
+    dl.setenv('prod')
     project_name = "Nvidia Demo"
     dataset_name = "Nvidia"
 

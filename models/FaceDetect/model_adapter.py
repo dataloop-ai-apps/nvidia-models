@@ -5,7 +5,7 @@ import subprocess
 import dtlpy as dl
 import json
 
-from facedetect import FaceDetect
+from facenet import FaceNet
 
 logger = logging.getLogger('[Nvidia Models]')
 
@@ -45,7 +45,7 @@ class TaoModelAdapter(dl.BaseModelAdapter):
         logger.info('loading model')
         self.tao_model = None
         self.images_path = os.path.join(os.getcwd(), 'images')
-        self.tao_model = FaceDetect(**self.configuration["model_config"])
+        self.tao_model = FaceNet(**self.configuration["model_config"])
 
         # for model in models:
         #     if self.configuration["model_name"] == model.get_name():

@@ -11,7 +11,7 @@ inferencer_config{
   gpu_index: 0
   # model handler config
   tlt_config{
-    model: "/tmp/tao_models/facedetect_vunpruned_v2.0/model.tlt"
+    model: "/tmp/tao_models/facenet_vunpruned_v2.0/model.tlt"
   }
 }
 bbox_handler_config{
