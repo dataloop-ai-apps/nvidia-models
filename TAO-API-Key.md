@@ -1,6 +1,6 @@
 # How to get API key and ORG for TAO Toolkit
 
-## Guide from NVIDIA form:
+## Guide from NVIDIA forums:
 
 ![1.png](assets%2F1.png)
 
