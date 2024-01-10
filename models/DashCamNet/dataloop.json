@@ -1,0 +1,92 @@
+{
+  "name": "dashcamnet-app",
+  "description": "An app to install the DashCamNet model. The model described in this card detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycle.",
+  "categories": [],
+  "displayName": "dashcamnet App",
+  "version": "v0.1.0",
+  "scope": "project",
+  "codebaseZ": {
+    "type": "git",
+    "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
+    "gitTag": "v0.1.0"
+  },
+  "components": {
+    "dashcamnet-deploy": {
+      "type": "computeConfig",
+      "spec": {
+        "name": "dashcamnet-deploy",
+        "runtime": {
+          "podType": "gpu-t4",
+          "concurrency": 1,
+          "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2",
+          "autoscaler": {
+            "type": "rabbitmq",
+            "minReplicas": 0,
+            "maxReplicas": 2,
+            "queueLength": 1000
+          },
+          "preemptible": false
+        }
+      }
+    },
+    "trafficcamnet-module": {
+      "type": "module",
+      "spec": {
+        "name": "trafficcamnet-module",
+        "entryPoint": "trafficcamnet.py",
+        "className": "TrafficCamNet",
+        "computeConfig": "trafficcamnet-deploy",
+        "initInputs": [
+          {
+            "type": "Model",
+            "name": "model_entity"
+          }
+        ],
+        "functions": [
+          {
+            "name": "predict_items",
+            "input": [
+              {
+                "type": "Item[]",
+                "name": "items",
+                "description": "The input images for prediction."
+              }
+            ],
+            "output": [
+              {
+                "type": "Item[]",
+                "name": "items",
+                "description": "The same input images for prediction."
+              },
+              {
+                "type": "Annotations[]",
+                "name": "annotations",
+                "description": "The predicted annotations."
+              }
+            ],
+            "displayName": "Predict Items",
+            "displayIcon": "",
+            "description": "The inference function of the model."
+          }
+        ]
+      }
+    },
+    "trafficcamnet": {
+      "type": "model",
+      "spec": {
+        "name": "trafficcamnet",
+        "moduleName": "trafficcamnet-module",
+        "scope": "project",
+        "status": "trained",
+        "configuration": {
+          "model_name": "traffic-cam-net",
+          "model_config": {}
+        },
+        "inputType": "image",
+        "outputType": "box",
+        "metadata": {},
+        "description": "The model described in this card detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycle."
+      }
+    }
+  }
+}
