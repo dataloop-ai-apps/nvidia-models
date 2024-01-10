@@ -14,8 +14,8 @@ logger = logging.getLogger('[DashCamNet]')
 
 
 class DashCamNet(TaoModel):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **model_config):
+        super().__init__(**model_config)
         self.key = 'tlt_encode'
         self.res_dir = 'dashcamnet_res'
         os.makedirs(self.res_dir, exist_ok=True)

@@ -12,8 +12,8 @@ logger = logging.getLogger('[LPDNet]')
 
 
 class LPDNet(TaoModel):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **model_config):
+        super().__init__(**model_config)
         self.key = 'nvidia_tlt'
         self.res_dir = 'lpd_res'
         os.makedirs(self.res_dir, exist_ok=True)

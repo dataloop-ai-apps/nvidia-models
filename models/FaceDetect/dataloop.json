@@ -1,0 +1,92 @@
+{
+  "name": "facedetect-app",
+  "description": "An app to install the FaceDetect model. The model detects one or more faces in the given image / video. Compared to the FaceirNet model, this model gives better results on RGB images and smaller faces.",
+  "categories": [],
+  "displayName": "facedetect App",
+  "version": "v0.1.0",
+  "scope": "project",
+  "codebaseZ": {
+    "type": "git",
+    "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
+    "gitTag": "v0.1.0"
+  },
+  "components": {
+    "facedetect-deploy": {
+      "type": "computeConfig",
+      "spec": {
+        "name": "facedetect-deploy",
+        "runtime": {
+          "podType": "gpu-t4",
+          "concurrency": 1,
+          "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2",
+          "autoscaler": {
+            "type": "rabbitmq",
+            "minReplicas": 0,
+            "maxReplicas": 2,
+            "queueLength": 1000
+          },
+          "preemptible": false
+        }
+      }
+    },
+    "facedetect-module": {
+      "type": "module",
+      "spec": {
+        "name": "facedetect-module",
+        "entryPoint": "facedetect.py",
+        "className": "FaceDetect",
+        "computeConfig": "facedetect-deploy",
+        "initInputs": [
+          {
+            "type": "Model",
+            "name": "model_entity"
+          }
+        ],
+        "functions": [
+          {
+            "name": "predict_items",
+            "input": [
+              {
+                "type": "Item[]",
+                "name": "items",
+                "description": "The input images for prediction."
+              }
+            ],
+            "output": [
+              {
+                "type": "Item[]",
+                "name": "items",
+                "description": "The same input images for prediction."
+              },
+              {
+                "type": "Annotations[]",
+                "name": "annotations",
+                "description": "The predicted annotations."
+              }
+            ],
+            "displayName": "Predict Items",
+            "displayIcon": "",
+            "description": "The inference function of the model."
+          }
+        ]
+      }
+    },
+    "facedetect": {
+      "type": "model",
+      "spec": {
+        "name": "nv-face-detect-model",
+        "moduleName": "facedetect-module",
+        "scope": "project",
+        "status": "trained",
+        "configuration": {
+          "model_name": "face-detect",
+          "model_config": {}
+        },
+        "inputType": "image",
+        "outputType": "box",
+        "metadata": {},
+        "description": "The model detects one or more faces in the given image / video. Compared to the FaceirNet model, this model gives better results on RGB images and smaller faces."
+      }
+    }
+  }
+}
