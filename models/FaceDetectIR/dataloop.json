@@ -1,7 +1,12 @@
 {
   "name": "facedetectir-app",
   "description": "An app to install the FaceDetectIR model. The model detects one or more faces in the given image / video. Compared to the PeopleNet model, this model gives better results detecting large faces, such as faces in webcam images.",
-  "categories": [],
+  "attributes": {
+    "provider": "Nvidia",
+    "license": "EULA",
+    "category": "Model",
+    "Computer Vision": "Object Detection"
+  },
   "displayName": "facedetectir App",
   "version": "v0.1.0",
   "scope": "project",

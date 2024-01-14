@@ -1,7 +1,12 @@
 {
   "name": "dashcamnet-app",
   "description": "An app to install the DashCamNet model. The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles.",
-  "categories": [],
+  "attributes": {
+    "provider": "Nvidia",
+    "license": "EULA",
+    "category": "Model",
+    "Computer Vision": "Object Detection"
+  },
   "displayName": "dashcamnet App",
   "version": "v0.1.0",
   "scope": "project",

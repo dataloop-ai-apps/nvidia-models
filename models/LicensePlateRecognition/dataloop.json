@@ -1,7 +1,12 @@
 {
   "name": "lpr-net-app",
   "description": "An app to install the License Plate Detection (LPDNet) model. The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images.",
-  "categories": [],
+  "attributes": {
+    "provider": "Nvidia",
+    "license": "EULA",
+    "category": "Model",
+    "Computer Vision": "Object Detection"
+  },
   "displayName": "lpr-net App",
   "version": "v0.1.0",
   "scope": "project",

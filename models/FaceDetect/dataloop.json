@@ -1,7 +1,12 @@
 {
   "name": "facedetect-app",
   "description": "An app to install the FaceDetect model. The model detects one or more faces in the given image / video. Compared to the FaceirNet model, this model gives better results on RGB images and smaller faces.",
-  "categories": [],
+  "attributes": {
+    "provider": "Nvidia",
+    "license": "EULA",
+    "category": "Model",
+    "Computer Vision": "Object Detection"
+  },
   "displayName": "facedetect App",
   "version": "v0.1.0",
   "scope": "project",
