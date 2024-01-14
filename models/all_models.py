@@ -1,21 +1,21 @@
 try:
     from models.DashCamNet.dashcamnet import DashCamNet
-    from models.FaceDetect.facenet import FaceNet
+    # from models.FaceDetect.facenet import FaceNet
     from models.FaceDetectIR.facedetectir import FaceDetectIR
     from models.LicensePlateDetection.license_plate_detection import LPDNet
     from models.LicensePlateRecognition.license_plate_recognition import LPRNet
     from models.PeopleNet.peoplenet import PeopleNet
-    from models.PointPillarNet.pointpillarnet import PointPillarNet
+    # from models.PointPillarNet.pointpillarnet import PointPillarNet
     from models.TrafficCamNet.trafficcamnet import TrafficCamNet
 
 except Exception:
     from DashCamNet.dashcamnet import DashCamNet
-    from FaceDetect.facenet import FaceNet
+    # from FaceDetect.facenet import FaceNet
     from FaceDetectIR.facedetectir import FaceDetectIR
     from LicensePlateDetection.license_plate_detection import LPDNet
     from LicensePlateRecognition.license_plate_recognition import LPRNet
     from PeopleNet.peoplenet import PeopleNet
-    from PointPillarNet.pointpillarnet import PointPillarNet
+    # from PointPillarNet.pointpillarnet import PointPillarNet
     from TrafficCamNet.trafficcamnet import TrafficCamNet
 
 
@@ -26,6 +26,6 @@ models = [
     LPDNet,
     LPRNet,
     PeopleNet,
-    PointPillarNet,
+    # PointPillarNet,
     TrafficCamNet,
 ]
