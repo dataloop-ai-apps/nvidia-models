@@ -5,6 +5,7 @@ try:
     from models.LicensePlateDetection.license_plate_detection import LPDNet
     from models.LicensePlateRecognition.license_plate_recognition import LPRNet
     from models.PeopleNet.peoplenet import PeopleNet
+    from models.PointPillarNet.pointpillarnet import PointPillarNet
     from models.TrafficCamNet.trafficcamnet import TrafficCamNet
 
 except Exception:
@@ -13,7 +14,8 @@ except Exception:
     from FaceDetectIR.facedetectir import FaceDetectIR
     from LicensePlateDetection.license_plate_detection import LPDNet
     from LicensePlateRecognition.license_plate_recognition import LPRNet
-    from models.PeopleNet.peoplenet import PeopleNet
+    from PeopleNet.peoplenet import PeopleNet
+    from PointPillarNet.pointpillarnet import PointPillarNet
     from TrafficCamNet.trafficcamnet import TrafficCamNet
 
 
@@ -24,5 +26,6 @@ models = [
     LPDNet,
     LPRNet,
     PeopleNet,
-    TrafficCamNet
+    PointPillarNet,
+    TrafficCamNet,
 ]
