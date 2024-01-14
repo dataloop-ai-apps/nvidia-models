@@ -45,13 +45,15 @@ class PointPillarNet(TaoModel):
     def detect(self, images_dir):
         ret = []
         try:
-            points, num_points = self._extract_pcd_files_points(images_dir=images_dir)
+            # points, num_points = self._extract_pcd_files_points(images_dir=images_dir)
+            # for point, num_point in zip(points, num_points):
+            #     point = [point]
+            #     num_point = [num_point]
             logger.info(f"Running pointpillars inference on {images_dir}, Content {os.listdir(images_dir)}")
             os.makedirs(f'{os.getcwd()}/{self.res_dir}', exist_ok=True)
             with os.popen(
                     f'pointpillars inference '
-                    f'-e {os.getcwd()}/models/PointPillarNet/inference_spec.txt '
-                    f'-i {points} {num_points} '
+                    f'-e {os.getcwd()}/models/PointPillarNet/inference_spec.yaml '
                     f'-r {os.getcwd()}/{self.res_dir} '
                     f'-k {self.key}') as f:
                 output = f.read().strip()
