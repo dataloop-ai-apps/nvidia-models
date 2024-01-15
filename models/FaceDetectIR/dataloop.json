@@ -15,6 +15,10 @@
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
     "gitTag": "v0.1.0"
   },
+  "codebase": {
+    "type": "local",
+    "src_path": "C:\\Users\\97252\\Desktop\\ML\\nvidia-models"
+  },
   "components": {
     "facedetectir-deploy": {
       "type": "computeConfig",
@@ -41,8 +45,8 @@
       "type": "module",
       "spec": {
         "name": "facedetectir-module",
-        "entryPoint": "facedetectir.py",
-        "className": "FaceDetectIR",
+        "entryPoint": "models/model_adapter.py",
+        "className": "TaoModelAdapter",
         "computeConfig": "facedetectir-deploy",
         "initInputs": [
           {
@@ -100,7 +104,9 @@
         },
         "inputType": "image",
         "outputType": "box",
-        "labels": ["face"],
+        "labels": [
+          "face"
+        ],
         "metadata": {},
         "description": "The model detects one or more faces in the given image / video. Compared to the PeopleNet model, this model gives better results detecting large faces, such as faces in webcam images."
       }

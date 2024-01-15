@@ -15,6 +15,10 @@
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
     "gitTag": "v0.1.0"
   },
+  "codebase": {
+    "type": "local",
+    "src_path": "C:\\Users\\97252\\Desktop\\ML\\nvidia-models"
+  },
   "components": {
     "dashcamnet-deploy": {
       "type": "computeConfig",
@@ -41,8 +45,8 @@
       "type": "module",
       "spec": {
         "name": "dashcamnet-module",
-        "entryPoint": "dashcamnet.py",
-        "className": "DashCamNet",
+        "entryPoint": "models/model_adapter.py",
+        "className": "TaoModelAdapter",
         "computeConfig": "dashcamnet-deploy",
         "initInputs": [
           {
@@ -100,7 +104,12 @@
         },
         "inputType": "image",
         "outputType": "box",
-        "labels": ["car", "bicycle", "person", "road_sign"],
+        "labels": [
+          "car",
+          "bicycle",
+          "person",
+          "road_sign"
+        ],
         "metadata": {},
         "description": "The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles."
       }

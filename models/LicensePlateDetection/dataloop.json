@@ -15,6 +15,10 @@
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
     "gitTag": "v0.1.0"
   },
+    "codebase": {
+    "type": "local",
+    "src_path": "C:\\Users\\97252\\Desktop\\ML\\nvidia-models"
+  },
   "components": {
     "lpd-net-deploy": {
       "type": "computeConfig",
@@ -41,8 +45,8 @@
       "type": "module",
       "spec": {
         "name": "lpd-net-module",
-        "entryPoint": "license_plate_detection.py",
-        "className": "LPDNet",
+        "entryPoint": "models/model_adapter.py",
+        "className": "TaoModelAdapter",
         "computeConfig": "lpd-net-deploy",
         "initInputs": [
           {

@@ -15,6 +15,10 @@
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
     "gitTag": "v0.1.0"
   },
+  "codebase": {
+    "type": "local",
+    "src_path": "C:\\Users\\97252\\Desktop\\ML\\nvidia-models"
+  },
   "components": {
     "peoplenet-deploy": {
       "type": "computeConfig",
@@ -35,18 +39,15 @@
           },
           "preemptible": false
         },
-        "secrets": [
-          "27713881-1b28-4bcf-b1ae-2a7d172345f5",
-          "571b3ed9-d30e-4c70-8a5d-26e07b61ecdc"
-        ]
+        "secrets": []
       }
     },
     "peoplenet-module": {
       "type": "module",
       "spec": {
         "name": "peoplenet-module",
-        "entryPoint": "peoplenet.py",
-        "className": "PeopleNet",
+        "entryPoint": "models/model_adapter.py",
+        "className": "TaoModelAdapter",
         "computeConfig": "peoplenet-deploy",
         "initInputs": [
           {
@@ -104,7 +105,11 @@
         },
         "inputType": "image",
         "outputType": "box",
-        "labels": ["person", "bag", "face"],
+        "labels": [
+          "person",
+          "bag",
+          "face"
+        ],
         "metadata": {},
         "description": "The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use."
       }

@@ -13,6 +13,7 @@ class FaceNet:
         self.res_dir = 'facenet_res'
         os.makedirs(self.res_dir, exist_ok=True)
         # download model - the txt config file points to this location for the model
+        logger.info("Downloading model artifacts")
         subprocess.Popen([
             '/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/facenet:unpruned_v2.0" --dest /tmp/tao_models/'],
             stdin=subprocess.PIPE,
@@ -41,15 +42,18 @@ class FaceNet:
                 with open(f'{os.getcwd()}/{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
                     for line in f.readlines():
                         vals = line.split(' ')
-                        if vals[0] == 'face':
-                            image_annotations.add(
-                                annotation_definition=dl.Box(label='face', top=vals[5], left=vals[4], bottom=vals[7],
-                                                             right=vals[6]),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                })
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                        image_annotations.add(
+                            annotation_definition=dl.Box(label=vals[0],
+                                                         top=vals[5],
+                                                         left=vals[4],
+                                                         bottom=vals[7],
+                                                         right=vals[6]),
+                            model_info={
+                                'name': self.get_name(),
+                                'confidence': 0.5
+                            })
+                        logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                        logger.info(f'Full Annotation Result: {vals}')
                 ret.append(image_annotations)
             return ret
         except Exception as e:

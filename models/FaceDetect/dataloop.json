@@ -15,6 +15,10 @@
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
     "gitTag": "v0.1.0"
   },
+    "codebase": {
+    "type": "local",
+    "src_path": "C:\\Users\\97252\\Desktop\\ML\\nvidia-models"
+  },
   "components": {
     "facedetect-deploy": {
       "type": "computeConfig",
@@ -41,8 +45,8 @@
       "type": "module",
       "spec": {
         "name": "facedetect-module",
-        "entryPoint": "facenet.py",
-        "className": "FaceNet",
+        "entryPoint": "models/model_adapter.py",
+        "className": "TaoModelAdapter",
         "computeConfig": "facedetect-deploy",
         "initInputs": [
           {

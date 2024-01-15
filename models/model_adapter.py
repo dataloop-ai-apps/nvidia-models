@@ -20,14 +20,14 @@ logger = logging.getLogger('[Nvidia Models]')
                                   'model_entity': dl.Model
                               })
 class TaoModelAdapter(dl.BaseModelAdapter):
-    def __init__(self, model_entity: dl.Model = None):
+    def __init__(self, ngc_api_key_secret_name, ngc_org_secret_name, model_entity: dl.Model = None):
         self.images_path = None
         self.tao_model = None
         self.ngc_config = {
-            "ngc_api_key": os.environ.get('key'),
-            "ngc_org": os.environ.get('org'),
+            "ngc_api_key": os.environ.get(ngc_api_key_secret_name),
+            "ngc_org": os.environ.get(ngc_org_secret_name),
         }
-        super().__init__(model_entity=model_entity)
+        super(TaoModelAdapter, self).__init__(model_entity)
 
     def load(self, local_path, **kwargs):
         # Remove "downloading ngc" section when there is a working image with ngc-cli
@@ -46,7 +46,6 @@ class TaoModelAdapter(dl.BaseModelAdapter):
                                    stdin=subprocess.PIPE,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, shell=True)
-        logger.info(f'Loading api configs from {os.getcwd()}: content: {os.listdir(os.getcwd())}')
         input_data = (
                 self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
                 self.ngc_config["ngc_org"].encode() + b'\n\n\n'

@@ -15,6 +15,7 @@ class LPRNet:
         os.makedirs(self.res_dir, exist_ok=True)
 
         # download model - the txt config file points to this location for the model
+        logger.info("Downloading model artifacts")
         subprocess.Popen(['/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/lprnet:trainable_v1.0" --dest /tmp/tao_models/'],
                          stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE,
@@ -57,6 +58,7 @@ class LPRNet:
                             'confidence': 0.5
                         })
                     ret.append(image_annotations)
+                    logger.info(f'Full Annotation Result: {results[image_path]}')
 
             return ret
         except Exception as e:

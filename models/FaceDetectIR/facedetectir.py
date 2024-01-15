@@ -13,6 +13,7 @@ class FaceDetectIR:
         self.res_dir = 'facedetectir_res'
         os.makedirs(self.res_dir, exist_ok=True)
         # download model - the txt config file points to this location for the model
+        logger.info("Downloading model artifacts")
         subprocess.Popen([
             '/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/facedetectir:unpruned_v1.0" --dest /tmp/tao_models/'],
             stdin=subprocess.PIPE,
@@ -54,6 +55,7 @@ class FaceDetectIR:
                                     'confidence': 0.5
                                 })
                             logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                            logger.info(f'Full Annotation Result: {vals}')
                 ret.append(image_annotations)
             return ret
         except Exception as e:

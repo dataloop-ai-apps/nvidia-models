@@ -1,5 +1,5 @@
 {
-  "name": "trafficcamnet-app",
+  "name": "trafficcamnet-app-shadi",
   "description": "An app to install the TrafficCamNet model. The model described detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles.",
   "attributes": {
     "provider": "Nvidia",
@@ -7,7 +7,7 @@
     "category": "Model",
     "Computer Vision": "Object Detection"
   },
-  "displayName": "trafficcamnet App",
+  "displayName": "Traffic Cam Net Shadi",
   "version": "v0.1.0",
   "scope": "project",
   "codebaseZ": {
@@ -17,7 +17,7 @@
   },
   "codebase": {
     "type": "local",
-    "src_path": "C:\\Users\\Ofir\\PycharmProjects\\nvidia-models"
+    "src_path": "C:\\Users\\97252\\Desktop\\ML\\nvidia-models"
   },
   "components": {
     "trafficcamnet-deploy": {
@@ -39,23 +39,28 @@
           },
           "preemptible": false
         },
-        "secrets": [
-          "27713881-1b28-4bcf-b1ae-2a7d172345f5",
-          "571b3ed9-d30e-4c70-8a5d-26e07b61ecdc"
-        ]
+        "secrets": []
       }
     },
     "trafficcamnet-module": {
       "type": "module",
       "spec": {
         "name": "trafficcamnet-module",
-        "entryPoint": "models/TrafficCamNet/trafficcamnet.py",
-        "className": "TrafficCamNet",
+        "entryPoint": "models/model_adapter.py",
+        "className": "TaoModelAdapter",
         "computeConfig": "trafficcamnet-deploy",
         "initInputs": [
           {
             "type": "Model",
             "name": "model_entity"
+          },
+          {
+            "type": "String",
+            "name": "ngc_api_key_secret_name"
+          },
+          {
+            "type": "String",
+            "name": "ngc_org_secret_name"
           }
         ],
         "functions": [
@@ -100,7 +105,12 @@
         },
         "inputType": "image",
         "outputType": "box",
-        "labels": ["car", "bicycle", "person", "road_sign"],
+        "labels": [
+          "car",
+          "bicycle",
+          "person",
+          "road_sign"
+        ],
         "metadata": {},
         "description": "The model described detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles."
       }
