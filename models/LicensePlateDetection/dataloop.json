@@ -43,6 +43,14 @@
         "computeConfig": "lpd-net-deploy",
         "initInputs": [
           {
+            "type": "String",
+            "name": "ngc_api_key_secret_name"
+          },
+          {
+            "type": "String",
+            "name": "ngc_org_secret_name"
+          },
+          {
             "type": "Model",
             "name": "model_entity"
           }
