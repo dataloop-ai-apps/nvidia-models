@@ -104,6 +104,7 @@
         },
         "inputType": "image",
         "outputType": "box",
+        "labels": ["person", "bag", "face"],
         "metadata": {},
         "description": "The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use."
       }

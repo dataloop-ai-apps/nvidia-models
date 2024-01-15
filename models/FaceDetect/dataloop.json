@@ -20,6 +20,9 @@
       "type": "computeConfig",
       "spec": {
         "name": "facedetect-deploy",
+        "versions": {
+          "dtlpy": "1.89.6"
+        },
         "runtime": {
           "podType": "gpu-t4",
           "concurrency": 1,
@@ -89,6 +92,7 @@
         },
         "inputType": "image",
         "outputType": "box",
+        "labels": ["face"],
         "metadata": {},
         "description": "The model detects one or more faces in the given image / video. Compared to the FaceirNet model, this model gives better results on RGB images and smaller faces."
       }

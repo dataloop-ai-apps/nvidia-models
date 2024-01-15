@@ -34,10 +34,9 @@ class PeopleNet:
                     f'-k {self.key}') as f:
                 output = f.read().strip()
             logger.info(f"Full Model Output:\n{output}")
+
             for image_path in os.listdir(images_dir):
                 image_annotations = dl.AnnotationCollection()
-                logger.info(f"**** res dir {os.getcwd()}/{self.res_dir}")
-                logger.info(f"**** res dir content {os.listdir(f'{os.getcwd()}/{self.res_dir}')}")
                 with open(f'{os.getcwd()}/{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
                     for line in f.readlines():
                         vals = line.split(' ')
@@ -68,4 +67,4 @@ class PeopleNet:
 
     @staticmethod
     def get_labels():
-        return ['person', 'bag', 'face']
+        return ["person", "bag", "face"]

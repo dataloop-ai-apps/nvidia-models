@@ -100,6 +100,7 @@
         },
         "inputType": "image",
         "outputType": "note",
+        "labels": [],
         "metadata": {},
         "description": "The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images."
       }

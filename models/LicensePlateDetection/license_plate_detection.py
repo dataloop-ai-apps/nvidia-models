@@ -4,17 +4,11 @@ import subprocess
 import dtlpy as dl
 from pathlib import Path
 
-try:
-    from ..tao_model import TaoModel
-except Exception:
-    from tao_model import TaoModel
-
 logger = logging.getLogger('[LPDNet]')
 
 
-class LPDNet(TaoModel):
-    def __init__(self, **model_config):
-        super().__init__(**model_config)
+class LPDNet:
+    def __init__(self):
         self.key = 'nvidia_tlt'
         self.res_dir = 'lpd_res'
         os.makedirs(self.res_dir, exist_ok=True)
@@ -72,8 +66,4 @@ class LPDNet(TaoModel):
 
     @staticmethod
     def get_labels():
-        return ['lpd']
-
-    # @staticmethod
-    # def get_output_type():
-    #     return dl.AnnotationType.BOX
+        return ["lpd"]

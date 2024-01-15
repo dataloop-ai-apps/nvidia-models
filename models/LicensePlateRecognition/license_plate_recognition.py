@@ -4,15 +4,10 @@ import subprocess
 import dtlpy as dl
 import shutil
 
-try:
-    from ..tao_model import TaoModel
-except Exception:
-    from tao_model import TaoModel
-
 logger = logging.getLogger('[LPRNet]')
 
 
-class LPRNet(TaoModel):
+class LPRNet:
     def __init__(self, **model_config):
         super().__init__(**model_config)
         self.key = 'nvidia_tlt'
@@ -75,7 +70,3 @@ class LPRNet(TaoModel):
     @staticmethod
     def get_labels():
         return []
-
-    # @staticmethod
-    # def get_output_type():
-    #     return dl.AnnotationType.NOTE

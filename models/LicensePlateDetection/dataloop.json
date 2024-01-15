@@ -100,6 +100,7 @@
         },
         "inputType": "image",
         "outputType": "box",
+        "labels": ["lpd"],
         "metadata": {},
         "description": "The model detects one or more license plate objects from a car image and return a box around each object, as well as an lpd label for each object."
       }
