@@ -20,6 +20,9 @@
       "type": "computeConfig",
       "spec": {
         "name": "lpr-net-deploy",
+        "versions": {
+          "dtlpy": "1.89.6"
+        },
         "runtime": {
           "podType": "gpu-t4",
           "concurrency": 1,
@@ -96,7 +99,7 @@
           "model_config": {}
         },
         "inputType": "image",
-        "outputType": "box",
+        "outputType": "note",
         "metadata": {},
         "description": "The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images."
       }

@@ -3,18 +3,14 @@ import logging
 import subprocess
 import dtlpy as dl
 from pathlib import Path
-import urllib.request
 
-try:
-    from ..tao_model import TaoModel
-except Exception:
-    from tao_model import TaoModel
+from ..tao_model import TaoModel
 
 logger = logging.getLogger('[DashCamNet]')
 
 
 class DashCamNet(TaoModel):
-    def __init__(self, **model_config):
+    def __init__(self, **model_config, ):
         super().__init__(**model_config)
         self.key = 'tlt_encode'
         self.res_dir = 'dashcamnet_res'
@@ -48,52 +44,10 @@ class DashCamNet(TaoModel):
                 with open(f'{os.getcwd()}/{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
                     for line in f.readlines():
                         vals = line.split(' ')
-                        if vals[0] == 'car':
+                        if vals[0] in self.get_labels():
                             image_annotations.add(
                                 annotation_definition=dl.Box(
-                                    label='car',
-                                    top=vals[5],
-                                    left=vals[4],
-                                    bottom=vals[7],
-                                    right=vals[6]
-                                ),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                })
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                        if vals[0] == 'bicycle':
-                            image_annotations.add(
-                                annotation_definition=dl.Box(
-                                    label='bicycle',
-                                    top=vals[5],
-                                    left=vals[4],
-                                    bottom=vals[7],
-                                    right=vals[6]
-                                ),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                })
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                        if vals[0] == 'person':
-                            image_annotations.add(
-                                annotation_definition=dl.Box(
-                                    label='person',
-                                    top=vals[5],
-                                    left=vals[4],
-                                    bottom=vals[7],
-                                    right=vals[6]
-                                ),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                })
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                        if vals[0] == 'road_sign':
-                            image_annotations.add(
-                                annotation_definition=dl.Box(
-                                    label='road_sign',
+                                    label=vals[0],
                                     top=vals[5],
                                     left=vals[4],
                                     bottom=vals[7],
@@ -117,7 +71,3 @@ class DashCamNet(TaoModel):
     @staticmethod
     def get_labels():
         return ['car', 'bicycle', 'person', 'road_sign']
-
-    @staticmethod
-    def get_output_type():
-        return dl.AnnotationType.BOX

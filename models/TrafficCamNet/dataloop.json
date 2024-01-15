@@ -15,11 +15,18 @@
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
     "gitTag": "v0.1.0"
   },
+  "codebase": {
+    "type": "local",
+    "src_path": "C:\\Users\\Ofir\\PycharmProjects\\nvidia-models"
+  },
   "components": {
     "trafficcamnet-deploy": {
       "type": "computeConfig",
       "spec": {
         "name": "trafficcamnet-deploy",
+        "versions": {
+          "dtlpy": "1.89.6"
+        },
         "runtime": {
           "podType": "gpu-t4",
           "concurrency": 1,
@@ -31,25 +38,21 @@
             "queueLength": 1000
           },
           "preemptible": false
-        }
+        },
+        "secrets": [
+          "27713881-1b28-4bcf-b1ae-2a7d172345f5",
+          "571b3ed9-d30e-4c70-8a5d-26e07b61ecdc"
+        ]
       }
     },
     "trafficcamnet-module": {
       "type": "module",
       "spec": {
         "name": "trafficcamnet-module",
-        "entryPoint": "trafficcamnet.py",
+        "entryPoint": "models/TrafficCamNet/trafficcamnet.py",
         "className": "TrafficCamNet",
         "computeConfig": "trafficcamnet-deploy",
         "initInputs": [
-          {
-            "type": "String",
-            "name": "ngc_api_key_secret_name"
-          },
-          {
-            "type": "String",
-            "name": "ngc_org_secret_name"
-          },
           {
             "type": "Model",
             "name": "model_entity"

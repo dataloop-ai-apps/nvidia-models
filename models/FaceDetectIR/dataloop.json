@@ -20,6 +20,9 @@
       "type": "computeConfig",
       "spec": {
         "name": "facedetectir-deploy",
+        "versions": {
+          "dtlpy": "1.89.6"
+        },
         "runtime": {
           "podType": "gpu-t4",
           "concurrency": 1,

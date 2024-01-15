@@ -6,12 +6,8 @@ from pathlib import Path
 from glob import glob
 import open3d as o3d
 import numpy as np
-import urllib.request
 
-try:
-    from ..tao_model import TaoModel
-except Exception:
-    from tao_model import TaoModel
+from ..tao_model import TaoModel
 
 logger = logging.getLogger('[PointPillarNet]')
 

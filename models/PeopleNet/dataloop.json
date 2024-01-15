@@ -20,6 +20,9 @@
       "type": "computeConfig",
       "spec": {
         "name": "peoplenet-deploy",
+        "versions": {
+          "dtlpy": "1.89.6"
+        },
         "runtime": {
           "podType": "gpu-t4",
           "concurrency": 1,
@@ -31,7 +34,11 @@
             "queueLength": 1000
           },
           "preemptible": false
-        }
+        },
+        "secrets": [
+          "27713881-1b28-4bcf-b1ae-2a7d172345f5",
+          "571b3ed9-d30e-4c70-8a5d-26e07b61ecdc"
+        ]
       }
     },
     "peoplenet-module": {

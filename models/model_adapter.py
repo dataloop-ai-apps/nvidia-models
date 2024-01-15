@@ -3,7 +3,6 @@ import logging
 import shutil
 import subprocess
 import dtlpy as dl
-import json
 
 try:
     from models.all_models import models
@@ -21,10 +20,12 @@ logger = logging.getLogger('[Nvidia Models]')
                                   'model_entity': dl.Model
                               })
 class TaoModelAdapter(dl.BaseModelAdapter):
-    def __init__(self, ngc_api_key_secret_name: str, ngc_org_secret_name: str, model_entity: dl.Model = None):
+    def __init__(self, model_entity: dl.Model = None):
+        self.images_path = None
+        self.tao_model = None
         self.ngc_config = {
-            "ngc_api_key": os.environ[ngc_api_key_secret_name],
-            "ngc_org": os.environ[ngc_org_secret_name],
+            "ngc_api_key": os.environ.get('key'),
+            "ngc_org": os.environ.get('org'),
         }
         super().__init__(model_entity=model_entity)
 
@@ -46,21 +47,14 @@ class TaoModelAdapter(dl.BaseModelAdapter):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, shell=True)
         logger.info(f'Loading api configs from {os.getcwd()}: content: {os.listdir(os.getcwd())}')
-        # with open(f'models/api_configs.json', 'r') as f:
-        #     _configuration = json.load(f)
-        # inputdata = _configuration["ngc_api_key"].encode() + b'\n\n' + \
-        #             _configuration["ngc_org"].encode() + b'\n\n\n'
-
-        # inputdata = self.configuration["ngc_api_key"].encode() + b'\n\n' + \
-        #             self.configuration["ngc_org"].encode() + b'\n\n\n'
-
-        inputdata = self.ngc_config["ngc_api_key"].encode() + b'\n\n' + \
-                    self.ngc_config["ngc_org"].encode() + b'\n\n\n'
-        process.communicate(input=inputdata)
+        input_data = (
+                self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
+                self.ngc_config["ngc_org"].encode() + b'\n\n\n'
+        )
+        process.communicate(input=input_data)
         os.makedirs('/tmp/tao_models', exist_ok=True)
 
         logger.info('loading model')
-        self.tao_model = None
         self.images_path = os.path.join(os.getcwd(), 'images')
 
         for model in models:

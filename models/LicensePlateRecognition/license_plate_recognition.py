@@ -50,7 +50,13 @@ class LPRNet(TaoModel):
                 for image_path in os.listdir(images_dir):
                     image_annotations = dl.AnnotationCollection()
                     image_annotations.add(
-                        annotation_definition=dl.Note(0, 0, 100, 100, label=results[image_path]),
+                        annotation_definition=dl.Note(
+                            left=0,
+                            top=0,
+                            right=100,
+                            bottom=100,
+                            label=results[image_path]
+                        ),
                         model_info={
                             'name': self.get_name(),
                             'confidence': 0.5
@@ -70,6 +76,6 @@ class LPRNet(TaoModel):
     def get_labels():
         return []
 
-    @staticmethod
-    def get_output_type():
-        return dl.AnnotationType.NOTE
+    # @staticmethod
+    # def get_output_type():
+    #     return dl.AnnotationType.NOTE

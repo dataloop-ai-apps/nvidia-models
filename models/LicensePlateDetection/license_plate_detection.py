@@ -3,6 +3,7 @@ import logging
 import subprocess
 import dtlpy as dl
 from pathlib import Path
+
 try:
     from ..tao_model import TaoModel
 except Exception:
@@ -45,10 +46,15 @@ class LPDNet(TaoModel):
                 with open(f'{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
                     for line in f.readlines():
                         vals = line.split(' ')
-                        if vals[0] == 'lpd':
+                        if vals[0] in self.get_labels():
                             image_annotations.add(
-                                annotation_definition=dl.Box(label='lpd', top=vals[5], left=vals[4], bottom=vals[7],
-                                                             right=vals[6]),
+                                annotation_definition=dl.Box(
+                                    label=vals[0],
+                                    top=vals[5],
+                                    left=vals[4],
+                                    bottom=vals[7],
+                                    right=vals[6]
+                                ),
                                 model_info={
                                     'name': self.get_name(),
                                     'confidence': float(vals[16])
@@ -68,6 +74,6 @@ class LPDNet(TaoModel):
     def get_labels():
         return ['lpd']
 
-    @staticmethod
-    def get_output_type():
-        return dl.AnnotationType.BOX
+    # @staticmethod
+    # def get_output_type():
+    #     return dl.AnnotationType.BOX

@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 class TaoModel(ABC):
     def __init__(self, **model_config):
+        print("Init TaoModel class")
         self.model_config = model_config
 
     @abstractmethod

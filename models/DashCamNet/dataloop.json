@@ -18,6 +18,9 @@
   "components": {
     "dashcamnet-deploy": {
       "type": "computeConfig",
+      "versions": {
+        "dtlpy": "1.89.6"
+      },
       "spec": {
         "name": "dashcamnet-deploy",
         "runtime": {

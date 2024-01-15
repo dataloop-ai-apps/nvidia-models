@@ -3,7 +3,6 @@ import logging
 import subprocess
 import dtlpy as dl
 from pathlib import Path
-import urllib.request
 
 try:
     from ..tao_model import TaoModel
@@ -48,10 +47,15 @@ class FaceDetectIR(TaoModel):
                 with open(f'{os.getcwd()}/{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
                     for line in f.readlines():
                         vals = line.split(' ')
-                        if vals[0] == 'face':
+                        if vals[0] in self.get_labels():
                             image_annotations.add(
-                                annotation_definition=dl.Box(label='face', top=vals[5], left=vals[4], bottom=vals[7],
-                                                             right=vals[6]),
+                                annotation_definition=dl.Box(
+                                    label=vals[0],
+                                    top=vals[5],
+                                    left=vals[4],
+                                    bottom=vals[7],
+                                    right=vals[6]
+                                ),
                                 model_info={
                                     'name': self.get_name(),
                                     'confidence': 0.5
@@ -70,7 +74,3 @@ class FaceDetectIR(TaoModel):
     @staticmethod
     def get_labels():
         return ['face']
-
-    @staticmethod
-    def get_output_type():
-        return dl.AnnotationType.BOX

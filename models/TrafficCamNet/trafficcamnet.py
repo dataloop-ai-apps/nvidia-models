@@ -3,19 +3,12 @@ import logging
 import subprocess
 import dtlpy as dl
 from pathlib import Path
-import urllib.request
-
-try:
-    from ..tao_model import TaoModel
-except Exception:
-    from tao_model import TaoModel
 
 logger = logging.getLogger('[TrafficCamNet]')
 
 
-class TrafficCamNet(TaoModel):
-    def __init__(self, **model_config):
-        super().__init__(**model_config)
+class TrafficCamNet:
+    def __init__(self):
         self.key = 'tlt_encode'
         self.res_dir = 'trafficcamnet_res'
         os.makedirs(self.res_dir, exist_ok=True)
@@ -43,57 +36,13 @@ class TrafficCamNet(TaoModel):
             logger.info(f"Full Model Output:\n{output}")
             for image_path in os.listdir(images_dir):
                 image_annotations = dl.AnnotationCollection()
-                logger.info(f"**** res dir {os.getcwd()}/{self.res_dir}")
-                logger.info(f"**** res dir content {os.listdir(f'{os.getcwd()}/{self.res_dir}')}")
                 with open(f'{os.getcwd()}/{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
                     for line in f.readlines():
                         vals = line.split(' ')
-                        if vals[0] == 'car':
+                        if vals[0] in self.get_labels():
                             image_annotations.add(
                                 annotation_definition=dl.Box(
-                                    label='car',
-                                    top=vals[5],
-                                    left=vals[4],
-                                    bottom=vals[7],
-                                    right=vals[6]
-                                ),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                })
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                        if vals[0] == 'bicycle':
-                            image_annotations.add(
-                                annotation_definition=dl.Box(
-                                    label='bicycle',
-                                    top=vals[5],
-                                    left=vals[4],
-                                    bottom=vals[7],
-                                    right=vals[6]
-                                ),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                })
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                        if vals[0] == 'person':
-                            image_annotations.add(
-                                annotation_definition=dl.Box(
-                                    label='person',
-                                    top=vals[5],
-                                    left=vals[4],
-                                    bottom=vals[7],
-                                    right=vals[6]
-                                ),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                })
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                        if vals[0] == 'road_sign':
-                            image_annotations.add(
-                                annotation_definition=dl.Box(
-                                    label='road_sign',
+                                    label=vals[0],
                                     top=vals[5],
                                     left=vals[4],
                                     bottom=vals[7],
@@ -117,7 +66,3 @@ class TrafficCamNet(TaoModel):
     @staticmethod
     def get_labels():
         return ['car', 'bicycle', 'person', 'road_sign']
-
-    @staticmethod
-    def get_output_type():
-        return dl.AnnotationType.BOX
