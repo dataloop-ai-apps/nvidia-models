@@ -2,9 +2,9 @@
     "name": "people-net",
     "description": "An app to install the PeopleNet model. The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use.",
     "attributes": {
-        "provider": "Nvidia",
-        "license": "EULA",
-        "category": "Model",
+        "Provider": "Nvidia",
+        "License": "EULA",
+        "Category": "Model",
         "Computer Vision": "Object Detection"
     },
     "displayName": "PeopleNet",

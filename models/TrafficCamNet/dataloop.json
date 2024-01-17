@@ -2,9 +2,9 @@
   "name": "traffic-cam-net-app",
   "description": "An app to install the TrafficCamNet model. The model described detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are \u00e2\u20ac\u201c car, persons, road signs and bicycles.",
   "attributes": {
-    "provider": "Nvidia",
-    "license": "EULA",
-    "category": "Model",
+    "Provider": "Nvidia",
+    "License": "EULA",
+    "Category": "Model",
     "Computer Vision": "Object Detection"
   },
   "displayName": "TrafficCamNet",
