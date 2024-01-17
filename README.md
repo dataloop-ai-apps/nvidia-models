@@ -25,3 +25,12 @@ The following models from [NGC Catalog](https://catalog.ngc.nvidia.com/orgs/nvid
    1. `Description:` The model described in this card detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and two-wheelers.
    2. `Labels:` car, bicycle, person, road_sign
    3. `Annotations Type:` Bounding Box
+
+# Using the model as a Predict Model node in a pipeline:
+
+To use the model as a Predict Model node in a pipeline, after it was deployed, do as follows:
+1. Create a pipeline or edit an existing pipeline.
+2. Add a Predict Model pipeline node to the canvas.
+3. Select the requested model from the Model list.
+
+![predict_node.png](assets%2Fpredict_node.png)
