@@ -10,7 +10,7 @@
   "displayName": "TrafficCamNet",
   "version": "v0.1.5",
   "scope": "public",
-  "codebaseZ": {
+  "codebase": {
     "type": "git",
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
     "gitTag": "v0.1.5"
