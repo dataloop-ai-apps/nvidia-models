@@ -1,5 +1,5 @@
 {
-    "name": "dashcamnet-app",
+    "name": "dash-cam-net",
     "description": "An app to install the DashCamNet model. The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are \u00e2\u20ac\u201c car, persons, road signs and bicycles.",
     "attributes": {
         "provider": "Nvidia",
@@ -7,17 +7,13 @@
         "category": "Model",
         "Computer Vision": "Object Detection"
     },
-    "displayName": "dashcamnet App",
+    "displayName": "DashCamNet",
     "version": "v0.1.1",
-    "scope": "project",
-    "codebaseZ": {
+    "scope": "public",
+    "codebase": {
         "type": "git",
         "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
         "gitTag": "v0.1.1"
-    },
-    "codebase": {
-        "type": "local",
-        "src_path": "../.."
     },
     "components": {
         "computeConfigs": [
