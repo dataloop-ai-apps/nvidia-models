@@ -1,21 +1,27 @@
 # NVIDIA TAO Models in Dataloop
 
-This repo provides a way to run NVIDIA TAO Models as a Dataloop service.
+This repository provides an adapter to NVIDIA TAO Models for the Dataloop platform.
 
-## How to deploy a TAO service?
+# Available TAO Model:
 
-The easiest way is to simply run the `upload.py` script with your project and dataset 
-(change at the top of the script).
-
-The `upload.py` script uploads an example service of the 
-[TrafficCamNet](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/models/trafficcamnet)
-model.
-
-If you wish to deploy a service for a different TAO model, you need a docker image based on
-an image from [NGC Catalog](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/containers/tao-toolkit)
-that supports your model.
-You can use the `Dockerfile` as a template for making your own image.
-Make sure to `COPY` your model and any other files you need.
-
-Once you have an image, change it in the `upload.py` script 
-and change the command to run the model in `service/main.py`
+The following models from [NGC Catalog](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/containers/tao-toolkit) are available for installation on Dataloop platform:
+1. [DashCamNet](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/models/dashcamnet):
+   1. `Description:` The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles.
+   2. `Labels:` car, bicycle, person, road_sign
+   3. `Annotations Type:` Bounding Box
+2. [FaceDetectIR](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/models/facedetectir):
+   1. `Description:` The model detects one or more faces in the given image / video. Compared to the PeopleNet model, this model gives better results detecting large faces, such as faces in webcam images.
+   2. `Labels:` face
+   3. `Annotations Type:` Bounding Box
+3. [LicensePlateDetection](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/models/lpdnet):
+   1. `Description:` The model detects one or more license plate objects from a car image and return a box around each object, as well as an lpd label for each object.
+   2. `Labels:` lpd
+   3. `Annotations Type:` Bounding Box
+4. [PeopleNet](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/models/peoplenet): 
+   1. `Description:` The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use.
+   2. `Labels:` person, bag, face
+   3. `Annotations Type:` Bounding Box
+5. [TrafficCamNet](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/models/trafficcamnet):
+   1. `Description:` The model described in this card detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and two-wheelers.
+   2. `Labels:` car, bicycle, person, road_sign
+   3. `Annotations Type:` Bounding Box
