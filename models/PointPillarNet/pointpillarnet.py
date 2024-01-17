@@ -7,14 +7,11 @@ from glob import glob
 import open3d as o3d
 import numpy as np
 
-from ..tao_model import TaoModel
-
 logger = logging.getLogger('[PointPillarNet]')
 
 
-class PointPillarNet(TaoModel):
+class PointPillarNet:
     def __init__(self, **model_config):
-        super().__init__(**model_config)
         self.key = 'tlt_encode'
         self.res_dir = 'pointpillarnet_res'
         os.makedirs(self.res_dir, exist_ok=True)
