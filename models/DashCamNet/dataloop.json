@@ -1,118 +1,116 @@
 {
-  "name": "dashcamnet-app",
-  "description": "An app to install the DashCamNet model. The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles.",
-  "attributes": {
-    "provider": "Nvidia",
-    "license": "EULA",
-    "category": "Model",
-    "Computer Vision": "Object Detection"
-  },
-  "displayName": "dashcamnet App",
-  "version": "v0.1.0",
-  "scope": "project",
-  "codebaseZ": {
-    "type": "git",
-    "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-    "gitTag": "v0.1.0"
-  },
-  "codebase": {
-    "type": "local",
-    "src_path": "C:\\Users\\97252\\Desktop\\ML\\nvidia-models"
-  },
-  "components": {
-    "dashcamnet-deploy": {
-      "type": "computeConfig",
-      "spec": {
-        "name": "dashcamnet-deploy",
-        "versions": {
-          "dtlpy": "1.89.6"
-        },
-        "runtime": {
-          "podType": "gpu-t4",
-          "concurrency": 1,
-          "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2",
-          "autoscaler": {
-            "type": "rabbitmq",
-            "minReplicas": 0,
-            "maxReplicas": 2,
-            "queueLength": 1000
-          },
-          "preemptible": false
-        }
-      }
+    "name": "dashcamnet-app",
+    "description": "An app to install the DashCamNet model. The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are \u00e2\u20ac\u201c car, persons, road signs and bicycles.",
+    "attributes": {
+        "provider": "Nvidia",
+        "license": "EULA",
+        "category": "Model",
+        "Computer Vision": "Object Detection"
     },
-    "dashcamnet-module": {
-      "type": "module",
-      "spec": {
-        "name": "dashcamnet-module",
-        "entryPoint": "models/model_adapter.py",
-        "className": "TaoModelAdapter",
-        "computeConfig": "dashcamnet-deploy",
-        "initInputs": [
-          {
-            "type": "String",
-            "name": "ngc_api_key_secret_name"
-          },
-          {
-            "type": "String",
-            "name": "ngc_org_secret_name"
-          },
-          {
-            "type": "Model",
-            "name": "model_entity"
-          }
+    "displayName": "dashcamnet App",
+    "version": "v0.1.1",
+    "scope": "project",
+    "codebaseZ": {
+        "type": "git",
+        "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
+        "gitTag": "v0.1.1"
+    },
+    "codebase": {
+        "type": "local",
+        "src_path": "../.."
+    },
+    "components": {
+        "computeConfigs": [
+            {
+                "name": "dashcamnet-deploy",
+                "versions": {
+                    "dtlpy": "1.89.6"
+                },
+                "secrets": [],
+                "runtime": {
+                    "podType": "gpu-t4",
+                    "concurrency": 1,
+                    "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2",
+                    "autoscaler": {
+                        "type": "rabbitmq",
+                        "minReplicas": 0,
+                        "maxReplicas": 2,
+                        "queueLength": 1000
+                    },
+                    "preemptible": false
+                }
+            }
         ],
-        "functions": [
-          {
-            "name": "predict_items",
-            "input": [
-              {
-                "type": "Item[]",
-                "name": "items",
-                "description": "The input images for prediction."
-              }
-            ],
-            "output": [
-              {
-                "type": "Item[]",
-                "name": "items",
-                "description": "The same input images for prediction."
-              },
-              {
-                "type": "Annotations[]",
-                "name": "annotations",
-                "description": "The predicted annotations."
-              }
-            ],
-            "displayName": "Predict Items",
-            "displayIcon": "",
-            "description": "The inference function of the model."
-          }
+        "modules": [
+            {
+                "name": "dashcamnet-module",
+                "entryPoint": "models/model_adapter.py",
+                "className": "TaoModelAdapter",
+                "computeConfig": "dashcamnet-deploy",
+                "initInputs": [
+                    {
+                        "type": "Model",
+                        "name": "model_entity"
+                    },
+                    {
+                        "type": "String",
+                        "name": "ngc_api_key_secret_name"
+                    },
+                    {
+                        "type": "String",
+                        "name": "ngc_org_secret_name"
+                    }
+                ],
+                "functions": [
+                    {
+                        "name": "predict_items",
+                        "input": [
+                            {
+                                "type": "Item[]",
+                                "name": "items",
+                                "description": "The input images for prediction."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "type": "Item[]",
+                                "name": "items",
+                                "description": "The same input images for prediction."
+                            },
+                            {
+                                "type": "Annotations[]",
+                                "name": "annotations",
+                                "description": "The predicted annotations."
+                            }
+                        ],
+                        "displayName": "Predict Items",
+                        "displayIcon": "",
+                        "description": "The inference function of the model."
+                    }
+                ]
+            }
+        ],
+        "models": [
+            {
+                "name": "nv-dash-cam-net-model",
+                "moduleName": "dashcamnet-module",
+                "scope": "project",
+                "status": "trained",
+                "configuration": {
+                    "model_name": "dash-cam-net",
+                    "model_config": {}
+                },
+                "inputType": "image",
+                "outputType": "box",
+                "labels": [
+                    "car",
+                    "bicycle",
+                    "person",
+                    "road_sign"
+                ],
+                "metadata": {},
+                "description": "The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are \u00e2\u20ac\u201c car, persons, road signs and bicycles."
+            }
         ]
-      }
-    },
-    "dashcamnet": {
-      "type": "model",
-      "spec": {
-        "name": "nv-dash-cam-net-model",
-        "moduleName": "dashcamnet-module",
-        "scope": "project",
-        "status": "trained",
-        "configuration": {
-          "model_name": "dash-cam-net",
-          "model_config": {}
-        },
-        "inputType": "image",
-        "outputType": "box",
-        "labels": [
-          "car",
-          "bicycle",
-          "person",
-          "road_sign"
-        ],
-        "metadata": {},
-        "description": "The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles."
-      }
     }
-  }
 }
