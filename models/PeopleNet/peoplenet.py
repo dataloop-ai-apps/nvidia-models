@@ -53,7 +53,7 @@ class PeopleNet:
                                 ),
                                 model_info={
                                     'name': self.get_name(),
-                                    'confidence': 0.5
+                                    'confidence': float(vals[-1]) / 100
                                 }
                             )
                             logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')

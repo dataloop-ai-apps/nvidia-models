@@ -52,7 +52,7 @@ class LPDNet:
                                 ),
                                 model_info={
                                     'name': self.get_name(),
-                                    'confidence': float(vals[16])
+                                    'confidence': float(vals[-1])
                                 })
                             logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
                             logger.info(f'Full Annotation Result: {vals}')
