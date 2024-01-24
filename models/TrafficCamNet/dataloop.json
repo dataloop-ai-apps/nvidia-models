@@ -88,7 +88,7 @@
     ],
     "models": [
       {
-        "name": "nv-traffic-cam-net-model",
+        "name": "nv-trafficcamnet-model",
         "moduleName": "trafficcamnet-module",
         "scope": "project",
         "status": "trained",
