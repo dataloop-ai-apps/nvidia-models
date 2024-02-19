@@ -1,22 +1,25 @@
 try:
-    from models.DashCamNet.dashcamnet import DashCamNet
-    from models.FaceDetectIR.facedetectir import FaceDetectIR
-    from models.LicensePlateDetection.license_plate_detection import LPDNet
-    from models.LicensePlateRecognition.license_plate_recognition import LPRNet
-    from models.PeopleNet.peoplenet import PeopleNet
-    from models.TrafficCamNet.trafficcamnet import TrafficCamNet
+    from models.dash_cam_net.dashcamnet import DashCamNet
+    # from models.face_detect.facenet import FaceNet
+    from models.face_detect_ir.facedetectir import FaceDetectIR
+    from models.license_plate_detection.license_plate_detection import LPDNet
+    from models.license_plate_recognition.license_plate_recognition import LPRNet
+    from models.people_net.peoplenet import PeopleNet
+    from models.traffic_cam_net.trafficcamnet import TrafficCamNet
 
 except Exception:
-    from DashCamNet.dashcamnet import DashCamNet
-    from FaceDetectIR.facedetectir import FaceDetectIR
-    from LicensePlateDetection.license_plate_detection import LPDNet
-    from LicensePlateRecognition.license_plate_recognition import LPRNet
-    from PeopleNet.peoplenet import PeopleNet
-    from TrafficCamNet.trafficcamnet import TrafficCamNet
+    from dash_cam_net.dashcamnet import DashCamNet
+    # from models.face_detect.facenet import FaceNet
+    from face_detect_ir.facedetectir import FaceDetectIR
+    from license_plate_detection.license_plate_detection import LPDNet
+    from license_plate_recognition.license_plate_recognition import LPRNet
+    from people_net.peoplenet import PeopleNet
+    from traffic_cam_net.trafficcamnet import TrafficCamNet
 
 
 models = [
     DashCamNet,
+    # FaceNet,
     FaceDetectIR,
     LPDNet,
     LPRNet,
