@@ -11,18 +11,32 @@ logger = logging.getLogger('[PointPillarNet]')
 
 
 class PointPillarNet:
-    def __init__(self, **model_config):
+    def __init__(self):
+        self.name = "people-net"
         self.key = 'tlt_encode'
-        self.res_dir = 'pointpillarnet_res'
-        os.makedirs(self.res_dir, exist_ok=True)
+        self.res_dir = os.path.join(os.getcwd(), 'pointpillarnet_res')
+        self.model_download_version = "nvidia/tao/pointpillarnet:trainable_v1.0"
+        self.current_dir = os.path.dirname(str(__file__))
+
         # download model - the txt config file points to this location for the model
-        subprocess.Popen([
-            '/tmp/ngccli/ngc-cli/ngc registry model download-version "nvidia/tao/pointpillarnet:trainable_v1.0" --dest /tmp/tao_models/'],
+        # logger.info("Downloading model artifacts")
+
+        cli_filepath = os.path.join('/tmp', 'ngccli', 'ngc-cli', 'ngc')
+        dest_path = os.path.join('/tmp', 'tao_models')
+        download_status = subprocess.Popen(
+            [f'{cli_filepath} registry model download-version "{self.model_download_version}" --dest {dest_path}'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE, shell=True).wait()
-        if not os.path.isfile("/tmp/tao_models/pointpillarnet_vtrainable_v1.0/pointpillars_trainable.tlt"):
-            raise Exception("Failed loading the model")
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+        download_status.wait()
+        if download_status.returncode != 0:
+            (out, err) = download_status.communicate()
+            raise Exception(f'Failed loading the model: {err}')
+
+        # if not os.path.isfile("/tmp/tao_models/pointpillarnet_vtrainable_v1.0/pointpillars_trainable.tlt"):
+        #     raise Exception("Failed loading the model")
 
     @staticmethod
     def _extract_pcd_files_points(images_dir):
@@ -36,88 +50,48 @@ class PointPillarNet:
         return points, num_points
 
     def detect(self, images_dir):
-        ret = []
-        try:
-            # points, num_points = self._extract_pcd_files_points(images_dir=images_dir)
-            # for point, num_point in zip(points, num_points):
-            #     point = [point]
-            #     num_point = [num_point]
-            logger.info(f"Running pointpillars inference on {images_dir}, Content {os.listdir(images_dir)}")
-            os.makedirs(f'{os.getcwd()}/{self.res_dir}', exist_ok=True)
-            with os.popen(
-                    f'pointpillars inference '
-                    f'-e {os.getcwd()}/models/PointPillarNet/inference_spec.yaml '
-                    f'-r {os.getcwd()}/{self.res_dir} '
-                    f'-k {self.key}') as f:
-                output = f.read().strip()
-            logger.info(f"Full Model Output:\n{output}")
-            for image_path in os.listdir(images_dir):
-                image_annotations = dl.AnnotationCollection()
-                logger.info(f"**** res dir {os.getcwd()}/{self.res_dir}")
-                logger.info(f"**** res dir content {os.listdir(f'{os.getcwd()}/{self.res_dir}')}")
-                with open(f'{os.getcwd()}/{self.res_dir}/labels/{Path(image_path).stem}.txt', 'r') as f:
-                    for line in f.readlines():
-                        vals = line.split(' ')
-                        print(vals)
-                        if vals[0] == 'Vehicle':
-                            image_annotations.add(
-                                annotation_definition=dl.Cube3d(
-                                    label='Vehicle',
-                                    position=[],
-                                    scale=[],
-                                    rotation=[]
-                                ),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                }
-                            )
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                        if vals[0] == 'Pedestrian':
-                            image_annotations.add(
-                                annotation_definition=dl.Cube3d(
-                                    label='Pedestrian',
-                                    position=[],
-                                    scale=[],
-                                    rotation=[]
-                                ),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                }
-                            )
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                        if vals[0] == 'Cyclist':
-                            image_annotations.add(
-                                annotation_definition=dl.Cube3d(
-                                    label='Cyclist',
-                                    position=[],
-                                    scale=[],
-                                    rotation=[]
-                                ),
-                                model_info={
-                                    'name': self.get_name(),
-                                    'confidence': 0.5
-                                }
-                            )
-                            logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                ret.append(image_annotations)
-            return ret
-        except Exception as e:
-            logger.error(f"Error: {e}")
-            return []
+        ret = list()
+        logger.info(f"Running pointpillars inference on {images_dir}, Content {os.listdir(images_dir)}")
 
-    @staticmethod
-    def get_name():
-        return "point-pillar-net"
+        # points, num_points = self._extract_pcd_files_points(images_dir=images_dir)
+        # for point, num_point in zip(points, num_points):
+        #     point = [point]
+        #     num_point = [num_point]
 
-    @staticmethod
-    def get_labels():
-        return ['Vehicle', 'Pedestrian', 'Cyclist']
+        specs_filepath = os.path.join(self.current_dir, "inference_spec.yaml")
+        os.makedirs(self.res_dir, exist_ok=True)
+        with os.popen(
+            f'pointpillars inference '
+            f'-e {specs_filepath} '
+            f'-r {self.res_dir} '
+            f'-k {self.key}'
+        ) as f:
+            output = f.read().strip()
+            # logger.info(f"Full Model Output:\n{output}")
 
-    @staticmethod
-    def get_output_type():
-        return dl.AnnotationType.CUBE3D
+        for image_path in os.listdir(images_dir):
+            image_annotations = dl.AnnotationCollection()
+            output_filepath = os.path.join(self.res_dir, "labels", f"{Path(image_path).stem}.txt")
+            with open(output_filepath, 'r') as f:
+                for line in f.readlines():
+                    vals = line.split(' ')
+                    print(vals)
+                    image_annotations.add(
+                        annotation_definition=dl.Cube3d(
+                            label=vals[0],
+                            position=[],
+                            scale=[],
+                            rotation=[]
+                        ),
+                        model_info={
+                            'name': self.name,
+                            'confidence': 0.5
+                        }
+                    )
+                    # logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                    # logger.info(f'Full Annotation Result: {vals}')
+            ret.append(image_annotations)
+        return ret
 
 
 def test_extract_pcd_files_points():
