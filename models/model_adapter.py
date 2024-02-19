@@ -56,12 +56,11 @@ class TaoModelAdapter(dl.BaseModelAdapter):
         logger.info('loading model')
         self.images_path = os.path.join(os.getcwd(), 'images')
 
-        for model in models:
-            if self.configuration["model_name"] == model.get_name():
-                self.tao_model = model(**self.configuration["model_config"])
-                break
+        tao_model_class = models.get(self.configuration["model_name"], None)
+        if tao_model_class is not None:
+            self.tao_model = tao_model_class()
         else:
-            logger.warning("invalid model_name in configuration")
+            raise Exception("invalid model_name in configuration!")
 
         if os.path.isdir(self.images_path):
             shutil.rmtree(self.images_path)

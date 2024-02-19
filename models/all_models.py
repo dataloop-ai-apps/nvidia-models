@@ -17,12 +17,12 @@ except Exception:
     from traffic_cam_net.trafficcamnet import TrafficCamNet
 
 
-models = [
-    DashCamNet,
-    # FaceNet,
-    FaceDetectIR,
-    LPDNet,
-    LPRNet,
-    PeopleNet,
-    TrafficCamNet,
-]
+models = {
+    "dash-cam-net": DashCamNet,
+    # "face-net": FaceNet,
+    "face-detect-ir": FaceDetectIR,
+    "lpd-net": LPDNet,
+    "lpr-net": LPRNet,
+    "people-net": PeopleNet,
+    "traffic-cam-net": TrafficCamNet,
+}
