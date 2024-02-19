@@ -41,16 +41,21 @@ class LPDNet:
         specs_filepath = os.path.join(self.current_dir, "yolo_v4_tiny_retrain_kitti.txt")
         tlt_filepath = os.path.join('/tmp', 'tao_models', 'lpdnet_vunpruned_v2.1', 'yolov4_tiny_usa_trainable.tlt')
         os.makedirs(self.res_dir, exist_ok=True)
-        with os.popen(
+        predict_status = subprocess.Popen([
             f'yolo_v4_tiny inference '
             f'-e {specs_filepath} '
             f'-i {images_dir} '
             f'-r {self.res_dir} '
             f'-k {self.key} '
-            f'-m {tlt_filepath}'
-        ) as f:
-            output = f.read().strip()
-            # logger.info(f"Full Model Output:\n{output}")
+            f'-m {tlt_filepath}'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+        predict_status.wait()
+        if predict_status.returncode != 0:
+            (out, err) = predict_status.communicate()
+            raise Exception(f'Failed loading the model: {err}')
 
         for image_path in os.listdir(images_dir):
             image_annotations = dl.AnnotationCollection()

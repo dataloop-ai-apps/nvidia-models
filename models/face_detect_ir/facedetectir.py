@@ -41,15 +41,20 @@ class FaceDetectIR:
 
         specs_filepath = os.path.join(self.current_dir, "inference_spec.txt")
         os.makedirs(self.res_dir, exist_ok=True)
-        with os.popen(
+        predict_status = subprocess.Popen([
             f'detectnet_v2 inference '
             f'-e {specs_filepath} '
             f'-i {images_dir} '
             f'-r {self.res_dir} '
-            f'-k {self.key}'
-        ) as f:
-            output = f.read().strip()
-            # logger.info(f"Full Model Output:\n{output}")
+            f'-k {self.key}'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+        predict_status.wait()
+        if predict_status.returncode != 0:
+            (out, err) = predict_status.communicate()
+            raise Exception(f'Failed loading the model: {err}')
 
         for image_path in os.listdir(images_dir):
             image_annotations = dl.AnnotationCollection()

@@ -4,15 +4,15 @@ import subprocess
 import dtlpy as dl
 from pathlib import Path
 
-logger = logging.getLogger('[DashCamNet]')
+logger = logging.getLogger('[FaceNet]')
 
 
-class DashCamNet:
+class FaceNet:
     def __init__(self):
-        self.name = "dash-cam-net"
+        self.name = "face-net"
         self.key = 'tlt_encode'
-        self.res_dir = os.path.join(os.getcwd(), 'dashcamnet_res')
-        self.model_download_version = "nvidia/tao/dashcamnet:unpruned_v1.0"
+        self.res_dir = os.path.join(os.getcwd(), 'facenet_res')
+        self.model_download_version = "nvidia/tao/facenet:unpruned_v2.0"
         self.current_dir = os.path.dirname(str(__file__))
 
         # download model - the txt config file points to this location for the model
@@ -32,24 +32,30 @@ class DashCamNet:
             (out, err) = download_status.communicate()
             raise Exception(f'Failed loading the model: {err}')
 
-        # if not os.path.isfile("/tmp/tao_models/dashcamnet_vunpruned_v1.0/resnet18_dashcamnet.tlt"):
+        # if not os.path.isfile("/tmp/tao_models/facenet_vunpruned_v2.0/model.tlt"):
         #     raise Exception("Failed loading the model")
 
     def detect(self, images_dir):
+        # TODO: Find the correct model to load model.tlt
         ret = list()
         logger.info(f"Running detectnet_v2 inference on {images_dir}, Content {os.listdir(images_dir)}")
 
         specs_filepath = os.path.join(self.current_dir, "inference_spec.txt")
         os.makedirs(self.res_dir, exist_ok=True)
-        with os.popen(
+        predict_status = subprocess.Popen([
             f'detectnet_v2 inference '
             f'-e {specs_filepath} '
             f'-i {images_dir} '
             f'-r {self.res_dir} '
-            f'-k {self.key}'
-        ) as f:
-            output = f.read().strip()
-            # logger.info(f"Full Model Output:\n{output}")
+            f'-k {self.key}'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+        predict_status.wait()
+        if predict_status.returncode != 0:
+            (out, err) = predict_status.communicate()
+            raise Exception(f'Failed loading the model: {err}')
 
         for image_path in os.listdir(images_dir):
             image_annotations = dl.AnnotationCollection()

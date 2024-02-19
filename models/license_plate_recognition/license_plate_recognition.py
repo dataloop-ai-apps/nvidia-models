@@ -44,16 +44,38 @@ class LPRNet:
 
     def detect(self, images_dir):
         ret = list()
+
+        specs_filepath = os.path.join(self.current_dir, "lprnet_spec.txt")
+        tlt_filepath = os.path.join('/tmp', 'tao_models', 'lprnet_vtrainable_v1.0', 'us_lprnet_baseline18_trainable.tlt')
+        os.makedirs(self.res_dir, exist_ok=True)
+        # predict_status = subprocess.Popen([
+        #     f'lprnet inference '
+        #     f'-e {specs_filepath} '
+        #     f'-i {images_dir} '
+        #     f'-r {self.res_dir} '
+        #     f'-k {self.key} '
+        #     f'-m {tlt_filepath}'],
+        #     stdout=subprocess.PIPE,
+        #     stderr=subprocess.PIPE,
+        #     shell=True
+        # )
+        # predict_status.wait()
+        # if predict_status.returncode != 0:
+        #     (out, err) = predict_status.communicate()
+        #     raise Exception(f'Failed loading the model: {err}')
+        #
+        # output_lines = predict_status.stdout.readlines()
+
         with os.popen(
             f'lprnet inference '
-            f'-e {os.getcwd()}/models/LicensePlateRecognition/lprnet_spec.txt '
+            f'-e {specs_filepath} '
             f'-i {images_dir} '
-            f'-r {os.getcwd()}/{self.res_dir} '
+            f'-r {self.res_dir} '
             f'-k {self.key} '
-            f'-m /tmp/tao_models/lprnet_vtrainable_v1.0/us_lprnet_baseline18_trainable.tlt'
+            f'-m {tlt_filepath}'
         ) as f:
             output_lines = f.readlines()
-            # logger.info(f"Full Model Output:\n{''.join(output_lines)}")
+            logger.info(f"Full Model Output:\n{''.join(output_lines)}")
 
         res_lines = [res_line for res_line in output_lines if
                      res_line.startswith(tuple(os.listdir(images_dir)))]
@@ -61,11 +83,7 @@ class LPRNet:
         for image_path in os.listdir(images_dir):
             image_annotations = dl.AnnotationCollection()
             image_annotations.add(
-                annotation_definition=dl.Note(
-                    left=0,
-                    top=0,
-                    right=100,
-                    bottom=100,
+                annotation_definition=dl.Classification(
                     label=results[image_path]
                 ),
                 model_info={

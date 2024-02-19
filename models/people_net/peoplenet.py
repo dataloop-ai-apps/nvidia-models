@@ -4,15 +4,15 @@ import subprocess
 import dtlpy as dl
 from pathlib import Path
 
-logger = logging.getLogger('[TrafficCamNet]')
+logger = logging.getLogger('[PeopleNet]')
 
 
-class TrafficCamNet:
+class PeopleNet:
     def __init__(self):
-        self.name = "traffic-cam-net"
+        self.name = "people-net"
         self.key = 'tlt_encode'
-        self.res_dir = os.path.join(os.getcwd(), 'trafficcamnet_res')
-        self.model_download_version = "nvidia/tao/trafficcamnet:unpruned_v1.0"
+        self.res_dir = os.path.join(os.getcwd(), 'peoplenet_res')
+        self.model_download_version = "nvidia/tao/peoplenet:trainable_v2.5"
         self.current_dir = os.path.dirname(str(__file__))
 
         # download model - the txt config file points to this location for the model
@@ -32,7 +32,7 @@ class TrafficCamNet:
             (out, err) = download_status.communicate()
             raise Exception(f'Failed loading the model: {err}')
 
-        # if not os.path.isfile("/tmp/tao_models/trafficcamnet_vunpruned_v1.0/resnet18_trafficcamnet.tlt"):
+        # if not os.path.isfile("/tmp/tao_models/peoplenet_vtrainable_v2.5/resnet34_peoplenet.tlt"):
         #     raise Exception("Failed loading the model")
 
     def detect(self, images_dir):
@@ -41,15 +41,20 @@ class TrafficCamNet:
 
         specs_filepath = os.path.join(self.current_dir, "inference_spec.txt")
         os.makedirs(self.res_dir, exist_ok=True)
-        with os.popen(
+        predict_status = subprocess.Popen([
             f'detectnet_v2 inference '
             f'-e {specs_filepath} '
             f'-i {images_dir} '
             f'-r {self.res_dir} '
-            f'-k {self.key}'
-        ) as f:
-            output = f.read().strip()
-            # logger.info(f"Full Model Output:\n{output}")
+            f'-k {self.key}'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+        predict_status.wait()
+        if predict_status.returncode != 0:
+            (out, err) = predict_status.communicate()
+            raise Exception(f'Failed loading the model: {err}')
 
         for image_path in os.listdir(images_dir):
             image_annotations = dl.AnnotationCollection()
