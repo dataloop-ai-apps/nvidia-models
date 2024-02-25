@@ -2,18 +2,19 @@
     "name": "lpr-net",
     "description": "An app to install the License Plate Detection (LPDNet) model. The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images.",
     "attributes": {
-        "Provider": "Nvidia",
-        "License": "EULA",
         "Category": "Model",
-        "Computer Vision": "Object Detection"
+        "Provider": "Nvidia",
+        "Media Type": "Image",
+        "Computer Vision": "Object Detection",
+        "License": "EULA"
     },
     "displayName": "LicensePlateRecognition",
-    "version": "v0.1.6",
+    "version": "0.1.6",
     "scope": "public",
     "codebase": {
         "type": "git",
         "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-        "gitTag": "v0.1.6"
+        "gitTag": "0.1.6"
     },
     "components": {
         "computeConfigs": [

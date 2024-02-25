@@ -36,7 +36,7 @@ class LPRNet:
         #     raise Exception("Failed loading the model")
 
         src_filepath = os.path.join(self.current_dir, 'us_lp_characters.txt')
-        dst_filepath = os.path.join(dest_path, 'lprnet_vtrainable_v1.0, us_lp_characters.txt')
+        dst_filepath = os.path.join(dest_path, 'lprnet_vtrainable_v1.0', 'us_lp_characters.txt')
         shutil.copyfile(src_filepath, dst_filepath)
 
         # shutil.copyfile(f'{os.getcwd()}/models/LicensePlateRecognition/us_lp_characters.txt',

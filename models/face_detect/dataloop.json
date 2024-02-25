@@ -2,18 +2,19 @@
     "name": "face-detect",
     "description": "An app to install the FaceDetect model. The model detects one or more faces in the given image / video. Compared to the FaceirNet model, this model gives better results on RGB images and smaller faces.",
     "attributes": {
-        "Provider": "Nvidia",
-        "License": "EULA",
         "Category": "Model",
-        "Computer Vision": "Object Detection"
+        "Provider": "Nvidia",
+        "Media Type": "Image",
+        "Computer Vision": "Object Detection",
+        "License": "EULA"
     },
     "displayName": "FaceDetect",
-    "version": "v0.1.6",
-    "scope": "project",
+    "version": "0.1.6",
+    "scope": "public",
     "codebase": {
         "type": "git",
         "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-        "gitTag": "v0.1.6"
+        "gitTag": "0.1.6"
     },
     "components": {
         "computeConfigs": [

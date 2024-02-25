@@ -2,18 +2,19 @@
     "name": "people-net",
     "description": "An app to install the PeopleNet model. The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use.",
     "attributes": {
-        "Provider": "Nvidia",
-        "License": "EULA",
         "Category": "Model",
-        "Computer Vision": "Object Detection"
+        "Provider": "Nvidia",
+        "Media Type": "Image",
+        "Computer Vision": "Object Detection",
+        "License": "EULA"
     },
     "displayName": "PeopleNet",
-    "version": "v0.1.6",
-    "scope": "project",
+    "version": "0.1.6",
+    "scope": "public",
     "codebase": {
         "type": "git",
         "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-        "gitTag": "v0.1.6"
+        "gitTag": "0.1.6"
     },
     "components": {
         "computeConfigs": [

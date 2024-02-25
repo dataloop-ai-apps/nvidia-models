@@ -2,18 +2,19 @@
     "name": "lpd-net",
     "description": "An app to install the License Plate Detection (LPDNet) model. The model detects one or more license plate objects from a car image and return a box around each object, as well as an lpd label for each object.",
     "attributes": {
-        "Provider": "Nvidia",
-        "License": "EULA",
         "Category": "Model",
-        "Computer Vision": "Object Detection"
+        "Provider": "Nvidia",
+        "Media Type": "Image",
+        "Computer Vision": "Object Detection",
+        "License": "EULA"
     },
     "displayName": "LicensePlateDetection",
-    "version": "v0.1.6",
+    "version": "0.1.6",
     "scope": "public",
     "codebase": {
         "type": "git",
         "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-        "gitTag": "v0.1.6"
+        "gitTag": "0.1.6"
     },
     "components": {
         "computeConfigs": [

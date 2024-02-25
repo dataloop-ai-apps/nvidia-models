@@ -2,18 +2,19 @@
     "name": "face-detect-ir",
     "description": "An app to install the FaceDetectIR model. The model detects one or more faces in the given image / video. Compared to the PeopleNet model, this model gives better results detecting large faces, such as faces in webcam images.",
     "attributes": {
-        "Provider": "Nvidia",
-        "License": "EULA",
         "Category": "Model",
-        "Computer Vision": "Object Detection"
+        "Provider": "Nvidia",
+        "Media Type": "Image",
+        "Computer Vision": "Object Detection",
+        "License": "EULA"
     },
     "displayName": "FaceDetectIR",
-    "version": "v0.1.6",
+    "version": "0.1.6",
     "scope": "public",
     "codebase": {
         "type": "git",
         "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-        "gitTag": "v0.1.6"
+        "gitTag": "0.1.6"
     },
     "components": {
         "computeConfigs": [
