@@ -23,7 +23,6 @@
                 "versions": {
                     "dtlpy": "1.89.6"
                 },
-                "secrets": [],
                 "runtime": {
                     "podType": "gpu-t4",
                     "concurrency": 1,
@@ -35,7 +34,8 @@
                         "queueLength": 1000
                     },
                     "preemptible": false
-                }
+                },
+                "secrets": []
             }
         ],
         "modules": [
