@@ -95,19 +95,13 @@
                             {
                                 "type": "Json",
                                 "name": "filters",
-                                "description": "The json query to get all the items required for prediction."
+                                "description": "The DQL in json format to get all the items required for prediction."
                             }
                         ],
-                        "output": [
-                            {
-                                "type": "Boolean",
-                                "name": "result",
-                                "description": "Output True after the prediction on the items completed successfully."
-                            }
-                        ],
+                        "output": [],
                         "displayName": "Predict Dataset",
                         "displayIcon": "",
-                        "description": "Inference function of the model."
+                        "description": "Inference function of the model on a dataset."
                     }
                 ]
             }
