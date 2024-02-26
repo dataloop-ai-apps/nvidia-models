@@ -1,0 +1,129 @@
+{
+    "name": "face-detect",
+    "description": "An app to install the FaceDetect model. The model detects one or more faces in the given image / video. Compared to the FaceirNet model, this model gives better results on RGB images and smaller faces.",
+    "attributes": {
+        "Category": "Model",
+        "Provider": "Nvidia",
+        "Media Type": "Image",
+        "Computer Vision": "Object Detection",
+        "License": "EULA"
+    },
+    "displayName": "FaceDetect",
+    "version": "0.1.6",
+    "scope": "public",
+    "codebase": {
+        "type": "git",
+        "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
+        "gitTag": "0.1.6"
+    },
+    "components": {
+        "computeConfigs": [
+            {
+                "name": "facedetect-deploy",
+                "versions": {
+                    "dtlpy": "1.89.6"
+                },
+                "runtime": {
+                    "podType": "gpu-t4",
+                    "concurrency": 1,
+                    "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2",
+                    "autoscaler": {
+                        "type": "rabbitmq",
+                        "minReplicas": 0,
+                        "maxReplicas": 2,
+                        "queueLength": 1000
+                    },
+                    "preemptible": false
+                },
+                "secrets": []
+            }
+        ],
+        "modules": [
+            {
+                "name": "facedetect-module",
+                "entryPoint": "models/model_adapter.py",
+                "className": "TaoModelAdapter",
+                "computeConfig": "facedetect-deploy",
+                "initInputs": [
+                    {
+                        "type": "String",
+                        "name": "ngc_api_key_secret_name"
+                    },
+                    {
+                        "type": "String",
+                        "name": "ngc_org_secret_name"
+                    },
+                    {
+                        "type": "Model",
+                        "name": "model_entity"
+                    }
+                ],
+                "functions": [
+                    {
+                        "name": "predict_items",
+                        "input": [
+                            {
+                                "type": "Item[]",
+                                "name": "items",
+                                "description": "The input images for prediction."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "type": "Item[]",
+                                "name": "items",
+                                "description": "The same input images for prediction."
+                            },
+                            {
+                                "type": "Annotation[]",
+                                "name": "annotations",
+                                "description": "The predicted annotations."
+                            }
+                        ],
+                        "displayName": "Predict Items",
+                        "displayIcon": "",
+                        "description": "The inference function of the model."
+                    },
+                    {
+                        "name": "predict_dataset",
+                        "input": [
+                            {
+                                "type": "Dataset",
+                                "name": "dataset",
+                                "description": "The input dataset of the items required for prediction."
+                            },
+                            {
+                                "type": "Json",
+                                "name": "filters",
+                                "description": "The DQL in json format to get all the items required for prediction."
+                            }
+                        ],
+                        "output": [],
+                        "displayName": "Predict Dataset",
+                        "displayIcon": "",
+                        "description": "Inference function of the model on a dataset."
+                    }
+                ]
+            }
+        ],
+        "models": [
+            {
+                "name": "nv-face-detect-model",
+                "moduleName": "facedetect-module",
+                "scope": "project",
+                "status": "trained",
+                "configuration": {
+                    "model_name": "face-detect",
+                    "model_config": {}
+                },
+                "inputType": "image",
+                "outputType": "box",
+                "labels": [
+                    "face"
+                ],
+                "metadata": {},
+                "description": "An app to install the FaceDetect model. The model detects one or more faces in the given image / video. Compared to the FaceirNet model, this model gives better results on RGB images and smaller faces."
+            }
+        ]
+    }
+}
