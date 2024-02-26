@@ -83,6 +83,31 @@
                         "displayName": "Predict Items",
                         "displayIcon": "",
                         "description": "The inference function of the model."
+                    },
+                    {
+                        "name": "predict_dataset",
+                        "input": [
+                            {
+                                "type": "Dataset",
+                                "name": "dataset",
+                                "description": "The input dataset of the items required for prediction."
+                            },
+                            {
+                                "type": "Json",
+                                "name": "filters",
+                                "description": "The json query to get all the items required for prediction."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "type": "Boolean",
+                                "name": "result",
+                                "description": "Output True after the prediction on the items completed successfully."
+                            }
+                        ],
+                        "displayName": "Predict Dataset",
+                        "displayIcon": "",
+                        "description": "Inference function of the model."
                     }
                 ]
             }
