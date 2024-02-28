@@ -1,6 +1,6 @@
 {
     "name": "lpd-net",
-    "description": "An app to install the License Plate Detection (LPDNet) model. The model detects one or more license plate objects from a car image and return a box around each object, as well as an lpd label for each object.",
+    "description": "An app to install the License Plate Detection (LPDNet) model. The model detects one or more license plate objects from a car image and return a box around each object, as well as an lpd label for each object. Requires API Keys for Nvidia NGC, Refer github repo TAO-API-Key.md for more information",
     "attributes": {
         "Category": "Model",
         "Provider": "Nvidia",

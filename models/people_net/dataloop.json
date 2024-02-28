@@ -1,6 +1,6 @@
 {
     "name": "people-net",
-    "description": "An app to install the PeopleNet model. The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use.",
+    "description": "An app to install the PeopleNet model. The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use. Requires API Keys for Nvidia NGC, Refer github repo TAO-API-Key.md for more information",
     "attributes": {
         "Category": "Model",
         "Provider": "Nvidia",

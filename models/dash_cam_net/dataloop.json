@@ -1,6 +1,6 @@
 {
     "name": "dash-cam-net",
-    "description": "An app to install the DashCamNet model. The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles.",
+    "description": "An app to install the DashCamNet model. The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles. Requires API Keys for Nvidia NGC, Refer github repo TAO-API-Key.md for more information",
     "attributes": {
         "Category": "Model",
         "Provider": "Nvidia",
