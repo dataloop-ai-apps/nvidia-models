@@ -1,131 +1,131 @@
 {
-    "name": "people-net",
-    "description": "An app to install the PeopleNet model. The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use. Requires API Keys for Nvidia NGC, Refer github repo TAO-API-Key.md for more information",
-    "attributes": {
-        "Category": "Model",
-        "Provider": "Nvidia",
-        "Media Type": "Image",
-        "Computer Vision": "Object Detection",
-        "License": "EULA"
-    },
-    "displayName": "PeopleNet",
-    "version": "0.1.7",
-    "scope": "public",
-    "codebase": {
-        "type": "git",
-        "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-        "gitTag": "0.1.7"
-    },
-    "components": {
-        "computeConfigs": [
-            {
-                "name": "peoplenet-deploy",
-                "versions": {
-                    "dtlpy": "1.89.6"
-                },
-                "runtime": {
-                    "podType": "gpu-t4",
-                    "concurrency": 1,
-                    "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2",
-                    "autoscaler": {
-                        "type": "rabbitmq",
-                        "minReplicas": 0,
-                        "maxReplicas": 2,
-                        "queueLength": 1000
-                    },
-                    "preemptible": false
-                },
-                "secrets": []
-            }
+  "name": "people-net",
+  "description": "An app to install the PeopleNet model. The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use. Requires API Keys for Nvidia NGC, Refer github repo TAO-API-Key.md for more information",
+  "attributes": {
+    "Category": "Model",
+    "Provider": "Nvidia",
+    "Media Type": "Image",
+    "Computer Vision": "Object Detection",
+    "License": "EULA"
+  },
+  "displayName": "PeopleNet",
+  "version": "0.1.7",
+  "scope": "public",
+  "codebase": {
+    "type": "git",
+    "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
+    "gitTag": "0.1.7"
+  },
+  "components": {
+    "computeConfigs": [
+      {
+        "name": "peoplenet-deploy",
+        "versions": {
+          "dtlpy": "1.89.6"
+        },
+        "runtime": {
+          "podType": "gpu-t4",
+          "concurrency": 1,
+          "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2",
+          "autoscaler": {
+            "type": "rabbitmq",
+            "minReplicas": 0,
+            "maxReplicas": 2,
+            "queueLength": 1000
+          },
+          "preemptible": false
+        },
+        "secrets": []
+      }
+    ],
+    "modules": [
+      {
+        "name": "peoplenet-module",
+        "entryPoint": "models/model_adapter.py",
+        "className": "TaoModelAdapter",
+        "computeConfig": "peoplenet-deploy",
+        "initInputs": [
+          {
+            "type": "String",
+            "name": "ngc_api_key_secret_name"
+          },
+          {
+            "type": "String",
+            "name": "ngc_org_secret_name"
+          },
+          {
+            "type": "Model",
+            "name": "model_entity"
+          }
         ],
-        "modules": [
-            {
-                "name": "peoplenet-module",
-                "entryPoint": "models/model_adapter.py",
-                "className": "TaoModelAdapter",
-                "computeConfig": "peoplenet-deploy",
-                "initInputs": [
-                    {
-                        "type": "String",
-                        "name": "ngc_api_key_secret_name"
-                    },
-                    {
-                        "type": "String",
-                        "name": "ngc_org_secret_name"
-                    },
-                    {
-                        "type": "Model",
-                        "name": "model_entity"
-                    }
-                ],
-                "functions": [
-                    {
-                        "name": "predict_items",
-                        "input": [
-                            {
-                                "type": "Item[]",
-                                "name": "items",
-                                "description": "The input images for prediction."
-                            }
-                        ],
-                        "output": [
-                            {
-                                "type": "Item[]",
-                                "name": "items",
-                                "description": "The same input images for prediction."
-                            },
-                            {
-                                "type": "Annotation[]",
-                                "name": "annotations",
-                                "description": "The predicted annotations."
-                            }
-                        ],
-                        "displayName": "Predict Items",
-                        "displayIcon": "",
-                        "description": "The inference function of the model."
-                    },
-                    {
-                        "name": "predict_dataset",
-                        "input": [
-                            {
-                                "type": "Dataset",
-                                "name": "dataset",
-                                "description": "The input dataset of the items required for prediction."
-                            },
-                            {
-                                "type": "Json",
-                                "name": "filters",
-                                "description": "The DQL in json format to get all the items required for prediction."
-                            }
-                        ],
-                        "output": [],
-                        "displayName": "Predict Dataset",
-                        "displayIcon": "",
-                        "description": "Inference function of the model on a dataset."
-                    }
-                ]
-            }
-        ],
-        "models": [
-            {
-                "name": "nv-people-net-model",
-                "moduleName": "peoplenet-module",
-                "scope": "project",
-                "status": "trained",
-                "configuration": {
-                    "model_name": "people-net",
-                    "model_config": {}
-                },
-                "inputType": "image",
-                "outputType": "box",
-                "labels": [
-                    "person",
-                    "bag",
-                    "face"
-                ],
-                "metadata": {},
-                "description": "The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use."
-            }
+        "functions": [
+          {
+            "name": "predict_items",
+            "input": [
+              {
+                "type": "Item[]",
+                "name": "items",
+                "description": "The input images for prediction."
+              }
+            ],
+            "output": [
+              {
+                "type": "Item[]",
+                "name": "items",
+                "description": "The same input images for prediction."
+              },
+              {
+                "type": "Annotation[]",
+                "name": "annotations",
+                "description": "The predicted annotations."
+              }
+            ],
+            "displayName": "Predict Items",
+            "displayIcon": "",
+            "description": "The inference function of the model."
+          },
+          {
+            "name": "predict_dataset",
+            "input": [
+              {
+                "type": "Dataset",
+                "name": "dataset",
+                "description": "The input dataset of the items required for prediction."
+              },
+              {
+                "type": "Json",
+                "name": "filters",
+                "description": "The DQL in json format to get all the items required for prediction."
+              }
+            ],
+            "output": [],
+            "displayName": "Predict Dataset",
+            "displayIcon": "",
+            "description": "Inference function of the model on a dataset."
+          }
         ]
-    }
+      }
+    ],
+    "models": [
+      {
+        "name": "nv-people-net-model",
+        "moduleName": "peoplenet-module",
+        "scope": "project",
+        "status": "trained",
+        "configuration": {
+          "model_name": "people-net",
+          "model_config": {}
+        },
+        "inputType": "image",
+        "outputType": "box",
+        "labels": [
+          "person",
+          "bag",
+          "face"
+        ],
+        "metadata": {},
+        "description": "The Peoplenet model detects persons, bags, and faces in an image. This model is ready for commercial use."
+      }
+    ]
+  }
 }
