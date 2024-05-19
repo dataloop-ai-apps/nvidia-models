@@ -9,12 +9,12 @@
     "License": "EULA"
   },
   "displayName": "TrafficCamNet",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scope": "public",
   "codebase": {
     "type": "git",
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-    "gitTag": "0.2.0"
+    "gitTag": "0.2.1"
   },
   "components": {
     "computeConfigs": [
