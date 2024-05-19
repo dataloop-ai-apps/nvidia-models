@@ -20,9 +20,6 @@
         "computeConfigs": [
             {
                 "name": "facedetect-deploy",
-                "versions": {
-                    "dtlpy": "1.89.6"
-                },
                 "runtime": {
                     "podType": "gpu-t4",
                     "concurrency": 1,
@@ -111,7 +108,7 @@
                 "name": "nv-face-detect-model",
                 "moduleName": "facedetect-module",
                 "scope": "project",
-                "status": "trained",
+                "status": "pre-trained",
                 "configuration": {
                     "model_name": "face-detect",
                     "model_config": {}

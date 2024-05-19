@@ -20,9 +20,6 @@
     "computeConfigs": [
       {
         "name": "peoplenet-deploy",
-        "versions": {
-          "dtlpy": "1.89.6"
-        },
         "runtime": {
           "podType": "gpu-t4",
           "concurrency": 1,
@@ -111,7 +108,7 @@
         "name": "nv-people-net-model",
         "moduleName": "peoplenet-module",
         "scope": "project",
-        "status": "trained",
+        "status": "pre-trained",
         "configuration": {
           "model_name": "people-net",
           "model_config": {}

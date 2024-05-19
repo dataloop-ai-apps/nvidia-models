@@ -20,9 +20,6 @@
         "computeConfigs": [
             {
                 "name": "lpr-net-deploy",
-                "versions": {
-                    "dtlpy": "1.89.6"
-                },
                 "runtime": {
                     "podType": "gpu-t4",
                     "concurrency": 1,
@@ -111,7 +108,7 @@
                 "name": "nv-lpr-net-model",
                 "moduleName": "lpr-net-module",
                 "scope": "project",
-                "status": "trained",
+                "status": "pre-trained",
                 "configuration": {
                     "model_name": "lpr-net",
                     "model_config": {}
