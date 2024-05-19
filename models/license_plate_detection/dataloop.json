@@ -20,9 +20,6 @@
     "computeConfigs": [
       {
         "name": "lpd-net-deploy",
-        "versions": {
-          "dtlpy": "1.89.6"
-        },
         "runtime": {
           "podType": "gpu-t4",
           "concurrency": 1,
@@ -111,7 +108,7 @@
         "name": "nv-lpd-net-model",
         "moduleName": "lpd-net-module",
         "scope": "project",
-        "status": "trained",
+        "status": "pre-trained",
         "configuration": {
           "model_name": "lpd-net",
           "model_config": {}
