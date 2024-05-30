@@ -13,12 +13,12 @@
     "License": "EULA"
   },
   "displayName": "LicensePlateDetection",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "scope": "public",
   "codebase": {
     "type": "git",
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-    "gitTag": "0.2.1"
+    "gitTag": "0.2.2"
   },
   "components": {
     "computeConfigs": [
