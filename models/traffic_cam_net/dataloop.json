@@ -2,6 +2,10 @@
   "name": "traffic-cam-net",
   "description": "An app to install the TrafficCamNet model. The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and two-wheelers. Requires API Keys for Nvidia NGC, Refer github repo TAO-API-Key.md for more information",
   "attributes": {
+    "Hub": [
+      "Nvidia",
+      "Dataloop"
+    ],
     "Category": "Model",
     "Provider": "Nvidia",
     "Media Type": "Image",
