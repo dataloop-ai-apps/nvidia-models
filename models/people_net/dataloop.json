@@ -7,7 +7,7 @@
       "Dataloop"
     ],
     "Category": "Model",
-    "Provider": "Nvidia",
+    "Provider": "NVIDIA",
     "Media Type": "Image",
     "Computer Vision": "Object Detection",
     "License": "EULA"
