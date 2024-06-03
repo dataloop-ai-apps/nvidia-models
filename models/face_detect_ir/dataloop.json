@@ -13,12 +13,12 @@
     "License": "EULA"
   },
   "displayName": "FaceDetectIR",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "scope": "public",
   "codebase": {
     "type": "git",
     "gitUrl": "https://github.com/dataloop-ai-apps/nvidia-models.git",
-    "gitTag": "0.2.2"
+    "gitTag": "0.2.3"
   },
   "components": {
     "computeConfigs": [
