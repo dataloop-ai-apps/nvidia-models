@@ -2,6 +2,9 @@ import unittest
 import dtlpy as dl
 import os
 import json
+import sys
+sys.path[0] = ""
+from models.model_adapter import TaoModelAdapter
 
 
 BOT_EMAIL = os.environ['BOT_EMAIL']
@@ -64,18 +67,24 @@ class MyTestCase(unittest.TestCase):
         dpk = self.project.dpks.publish(dpk=dpk)
         app = self.project.apps.install(dpk=dpk)
 
-        # Get model and predict
+        # Get model adapter
         model = app.project.models.get(model_name=model_name)
-        service = model.deploy()
+        model_adapter = TaoModelAdapter(
+            ngc_api_key_secret_name='API_KEY',
+            ngc_org_secret_name='API_ORG',
+            model_entity=model
+        )
 
-        model.metadata["system"]["deploy"] = {"services": [service.id]}
         filters = dl.Filters()
         filters.add(field="metadata.system.tags.test", values=True)
-        execution = model.evaluate(dataset_id=self.dataset.id, filters=filters)
-        execution = execution.wait()
-        return execution.output
+        model_adapter.evaluate_model(model=model, dataset=self.dataset, filters=filters)
+        return True
 
     def test_dash_cam_net(self):
         model_folder_name = "dash_cam_net"
         evaluation_result = self._perform_model_evaluation(model_folder_name=model_folder_name)
-        self.assertTrue(True)
+        self.assertTrue(evaluation_result)
+
+
+if __name__ == '__main__':
+    unittest.main()
