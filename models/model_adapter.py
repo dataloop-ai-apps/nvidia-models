@@ -31,15 +31,23 @@ class TaoModelAdapter(dl.BaseModelAdapter):
 
     def load(self, local_path, **kwargs):
         # Remove "downloading ngc" section when there is a working image with ngc-cli
-        logger.info('downloading ngc')
-        os.makedirs('/tmp/ngccli', exist_ok=True)
-        with os.popen(f'wget "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip" -P /tmp/ngccli') as f:
-            output = f.read().strip()
-        print("WGET:\n" + output)
+
+        # Download ngccli_cat_linux.zip (if required)
+        if not os.path.exists('/tmp/ngccli/ngccli_cat_linux.zip'):
+            logger.info('downloading ngc')
+            os.makedirs('/tmp/ngccli', exist_ok=True)
+            with os.popen(f'wget "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip" -P /tmp/ngccli') as f:
+                output = f.read().strip()
+            print("WGET:\n" + output)
+
+        # Unzip ngccli_cat_linux.zip
         with os.popen(f'unzip -u /tmp/ngccli/ngccli_cat_linux.zip -d /tmp/ngccli/') as f:
             output = f.read().strip()
         print("UNZIP:\n" + output)
-        os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
+
+        # Add ngc-cli to PATH (if required)
+        if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
+            os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
 
         logger.info('login to ngc')
         process = subprocess.Popen(['/tmp/ngccli/ngc-cli/ngc config set'],
