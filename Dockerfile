@@ -6,7 +6,8 @@ RUN apt install unzip && \
 
 ENV PATH="/tmp/ngccli/ngc-cli/:$PATH"
 
-RUN pip3 install --user dtlpy
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
 ENV HOME="/tmp" \
     VS_CODE_VERSION="4.16.1"
