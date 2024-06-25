@@ -84,10 +84,9 @@ class NvidiaBase(dl.BaseModelAdapter):
             (stdout, stderr) = download_status.communicate()
             logger.info(f'STDOUT:\n{stdout}')
             logger.info(f'STDERR:\n{stderr}')
-            raise Exception(f'Failed downloading cli command: "{' '.join(cmd)}". more logs above')
+            raise Exception(f'Failed downloading cli command: {" ".join(cmd)}. more logs above')
         if os.path.isdir(self.images_path):
             shutil.rmtree(self.images_path)
-
 
     def predict(self, batch, **kwargs):
         try:
@@ -112,7 +111,7 @@ class NvidiaBase(dl.BaseModelAdapter):
                 (stdout, stderr) = predict_status.communicate()
                 logger.info(f'STDOUT:\n{stdout}')
                 logger.info(f'STDERR:\n{stderr}')
-                raise Exception(f'Failed running nvidia cli command: "{' '.join(cmd)}". more logs above')
+                raise Exception(f'Failed running nvidia cli command: {" ".join(cmd)}. more logs above')
             annotations_batch = list()
             for image_path in os.listdir(self.images_path):
                 image_annotations = dl.AnnotationCollection()
