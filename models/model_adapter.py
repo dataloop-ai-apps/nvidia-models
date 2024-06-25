@@ -5,11 +5,6 @@ import subprocess
 from pathlib import Path
 import dtlpy as dl
 
-try:
-    from models.all_models import models
-except Exception:
-    from all_models import models
-
 logger = logging.getLogger('[Nvidia Models]')
 
 

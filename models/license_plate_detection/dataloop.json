@@ -42,8 +42,8 @@
     "modules": [
       {
         "name": "lpd-net-module",
-        "entryPoint": "models/model_adapter.py",
-        "className": "TaoModelAdapter",
+        "entryPoint": "models/license_plate_detection/license_plate_detection.py",
+        "className": "LPDNet",
         "computeConfig": "lpd-net-deploy",
         "initInputs": [
           {
@@ -150,7 +150,8 @@
         "status": "pre-trained",
         "configuration": {
           "model_name": "lpd-net",
-          "model_config": {}
+          "model_key": "nvidia_tlt",
+          "model_version": "nvidia/tao/lpdnet:unpruned_v2.1"
         },
         "inputType": "image",
         "outputType": "box",
