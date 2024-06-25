@@ -15,6 +15,6 @@ class DashCamNet(NvidiaBase):
         return [
             f'detectnet_v2 inference '
             f'-e {os.path.join(os.path.dirname(str(__file__)), "inference_spec")} '
-            f'-i results '
+            f'-i {self.images_path} '
             f'-r {self.res_dir} '
             f'-k {self.model_key}']
