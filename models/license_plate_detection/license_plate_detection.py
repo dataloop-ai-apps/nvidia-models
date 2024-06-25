@@ -15,6 +15,6 @@ class LPDNet(NvidiaBase):
             f'-e {os.path.join(Path(__file__).parent.absolute(), "yolo_v4_tiny_retrain_kitti.txt")} '
             f'-i {self.images_path} '
             f'-r {self.res_dir} '
-            f'-k {self.model_key}'
+            f'-k {self.model_key} '
             f'-m {tlt_filepath}'
         ]
