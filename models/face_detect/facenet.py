@@ -32,7 +32,7 @@ class FaceNet:
             (stdout, stderr) = download_status.communicate()
             logger.info(f'STDOUT:\n{stdout}')
             logger.info(f'STDERR:\n{stderr}')
-            raise Exception(f'Failed running nvidia cli command: "{' '.join(cmd)}". more logs above')
+            # raise Exception(f'Failed running nvidia cli command: {" ".join(cmd)}. more logs above')
 
         # if not os.path.isfile("/tmp/tao_models/facenet_vunpruned_v2.0/model.tlt"):
         #     raise Exception("Failed loading the model")
