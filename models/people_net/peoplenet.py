@@ -9,10 +9,10 @@ logger = logging.getLogger('[PeopleNet]')
 
 class PeopleNet:
     def __init__(self):
-        self.name = "people-net"
-        self.key = 'tlt_encode'
+        self.model_name = "people-net"
+        self.model_key = 'tlt_encode'
         self.res_dir = os.path.join(os.getcwd(), 'peoplenet_res')
-        self.model_download_version = "nvidia/tao/peoplenet:trainable_v2.5"
+        self.model_version = "nvidia/tao/peoplenet:trainable_v2.5"
         self.current_dir = os.path.dirname(str(__file__))
 
         # download model - the txt config file points to this location for the model
@@ -21,7 +21,7 @@ class PeopleNet:
         cli_filepath = os.path.join('/tmp', 'ngccli', 'ngc-cli', 'ngc')
         dest_path = os.path.join('/tmp', 'tao_models')
         download_status = subprocess.Popen(
-            [f'{cli_filepath} registry model download-version "{self.model_download_version}" --dest {dest_path}'],
+            [f'{cli_filepath} registry model download-version "{self.model_version}" --dest {dest_path}'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -46,7 +46,7 @@ class PeopleNet:
             f'-e {specs_filepath} '
             f'-i {images_dir} '
             f'-r {self.res_dir} '
-            f'-k {self.key}'],
+            f'-k {self.model_key}'],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             shell=True
@@ -71,7 +71,7 @@ class PeopleNet:
                             right=vals[6]
                         ),
                         model_info={
-                            'name': self.name,
+                            'name': self.model_name,
                             'confidence': float(vals[-1]) / 100
                         }
                     )

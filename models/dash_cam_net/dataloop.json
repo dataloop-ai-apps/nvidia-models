@@ -42,8 +42,8 @@
     "modules": [
       {
         "name": "dashcamnet-module",
-        "entryPoint": "models/model_adapter.py",
-        "className": "TaoModelAdapter",
+        "entryPoint": "models/dash_cam_net/dashcamnet.py",
+        "className": "DashCamNet",
         "computeConfig": "dashcamnet-deploy",
         "initInputs": [
           {
@@ -150,7 +150,8 @@
         "status": "pre-trained",
         "configuration": {
           "model_name": "dash-cam-net",
-          "model_config": {}
+          "model_key": "tlt_encode",
+          "model_version": "nvidia/tao/dashcamnet:unpruned_v1.0"
         },
         "inputType": "image",
         "outputType": "box",

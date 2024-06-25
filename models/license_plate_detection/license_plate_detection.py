@@ -9,10 +9,10 @@ logger = logging.getLogger('[LPDNet]')
 
 class LPDNet:
     def __init__(self):
-        self.name = "lpd-net"
-        self.key = 'nvidia_tlt'
+        self.model_name = "lpd-net"
+        self.model_key = 'nvidia_tlt'
         self.res_dir = os.path.join(os.getcwd(), 'lpd_res')
-        self.model_download_version = "nvidia/tao/lpdnet:unpruned_v2.1"
+        self.model_version = "nvidia/tao/lpdnet:unpruned_v2.1"
         self.current_dir = os.path.dirname(str(__file__))
 
         # download model - the txt config file points to this location for the model
@@ -21,7 +21,7 @@ class LPDNet:
         cli_filepath = os.path.join('/tmp', 'ngccli', 'ngc-cli', 'ngc')
         dest_path = os.path.join('/tmp', 'tao_models')
         download_status = subprocess.Popen(
-            [f'{cli_filepath} registry model download-version "{self.model_download_version}" --dest {dest_path}'],
+            [f'{cli_filepath} registry model download-version "{self.model_version}" --dest {dest_path}'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -46,7 +46,7 @@ class LPDNet:
             f'-e {specs_filepath} '
             f'-i {images_dir} '
             f'-r {self.res_dir} '
-            f'-k {self.key} '
+            f'-k {self.model_key} '
             f'-m {tlt_filepath}'],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -72,7 +72,7 @@ class LPDNet:
                             right=vals[6]
                         ),
                         model_info={
-                            'name': self.name,
+                            'name': self.model_name,
                             'confidence': float(vals[-1])
                         }
                     )
