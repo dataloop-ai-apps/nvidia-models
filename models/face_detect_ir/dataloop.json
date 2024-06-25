@@ -42,8 +42,8 @@
     "modules": [
       {
         "name": "facedetectir-module",
-        "entryPoint": "models/model_adapter.py",
-        "className": "TaoModelAdapter",
+        "entryPoint": "models/face_detect_ir/facedetectir.py",
+        "className": "FaceDetectIR",
         "computeConfig": "facedetectir-deploy",
         "initInputs": [
           {
@@ -150,7 +150,8 @@
         "status": "pre-trained",
         "configuration": {
           "model_name": "face-detect-ir",
-          "model_config": {}
+          "model_key": "tlt_encode",
+          "model_version": "nvidia/tao/facedetectir:unpruned_v1.0"
         },
         "inputType": "image",
         "outputType": "box",

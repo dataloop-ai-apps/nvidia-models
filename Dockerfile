@@ -6,10 +6,11 @@ RUN apt install unzip && \
 
 ENV PATH="/tmp/ngccli/ngc-cli/:$PATH"
 
-RUN pip3 install --user dtlpy
 
 ENV HOME="/tmp" \
     VS_CODE_VERSION="4.16.1"
+RUN pip3 install --user dtlpy
+
 WORKDIR $HOME
 RUN curl -fOL "https://github.com/coder/code-server/releases/download/v"$VS_CODE_VERSION"/code-server_"$VS_CODE_VERSION"_amd64.deb" && \
     dpkg -i "code-server_"$VS_CODE_VERSION"_amd64.deb" && \

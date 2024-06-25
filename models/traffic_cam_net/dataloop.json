@@ -42,8 +42,8 @@
     "modules": [
       {
         "name": "trafficcamnet-module",
-        "entryPoint": "models/model_adapter.py",
-        "className": "TaoModelAdapter",
+        "entryPoint": "models/traffic_cam_net/trafficcamnet.py",
+        "className": "TrafficCamNet",
         "computeConfig": "trafficcamnet-deploy",
         "initInputs": [
           {
@@ -150,7 +150,8 @@
         "status": "pre-trained",
         "configuration": {
           "model_name": "traffic-cam-net",
-          "model_config": {}
+          "model_key": "tlt_encode",
+          "model_version": "nvidia/tao/trafficcamnet:unpruned_v1.0"
         },
         "inputType": "image",
         "outputType": "box",
