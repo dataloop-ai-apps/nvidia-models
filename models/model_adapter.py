@@ -32,7 +32,7 @@ class NvidiaBase(dl.BaseModelAdapter):
     def load(self, local_path, **kwargs):
         model_name = self.model_entity.configuration.get("dash-cam-net")
         model_key = self.model_entity.configuration.get("key")
-        model_version = self.model_entity.configuration("model_version")
+        model_version = self.model_entity.configuration.get("model_version")
 
         # Remove "downloading ngc" section when there is a working image with ngc-cli
         logger.info('downloading ngc')
