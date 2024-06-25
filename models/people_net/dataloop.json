@@ -42,8 +42,8 @@
     "modules": [
       {
         "name": "peoplenet-module",
-        "entryPoint": "models/model_adapter.py",
-        "className": "TaoModelAdapter",
+        "entryPoint": "models/people_net/peoplenet.py",
+        "className": "PeopleNet",
         "computeConfig": "peoplenet-deploy",
         "initInputs": [
           {
@@ -150,7 +150,8 @@
         "status": "pre-trained",
         "configuration": {
           "model_name": "people-net",
-          "model_config": {}
+          "model_key": "tlt_encode",
+          "model_version": "nvidia/tao/peoplenet:trainable_v2.5"
         },
         "inputType": "image",
         "outputType": "box",
