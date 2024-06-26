@@ -12,7 +12,7 @@ logger = logging.getLogger('[PointPillarNet]')
 
 class PointPillarNet:
     def __init__(self):
-        self.model_name = "people-net"
+        self.model_name = "point-pillar-net"
         self.model_key = 'tlt_encode'
         self.res_dir = os.path.join(os.getcwd(), 'pointpillarnet_res')
         self.model_version = "nvidia/tao/pointpillarnet:trainable_v1.0"
