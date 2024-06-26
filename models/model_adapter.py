@@ -30,7 +30,7 @@ class NvidiaBase(dl.BaseModelAdapter):
         raise NotImplementedError("Please implement 'get_cmd' method in {}".format(self.__class__.__name__))
 
     def load(self, local_path, **kwargs):
-        model_name = self.model_entity.configuration.get("dash-cam-net")
+        model_name = self.model_entity.configuration.get("model_name")
         model_key = self.model_entity.configuration.get("model_key")
         model_version = self.model_entity.configuration.get("model_version")
 
@@ -51,8 +51,8 @@ class NvidiaBase(dl.BaseModelAdapter):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, shell=True)
         input_data = (
-                self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
-                self.ngc_config["ngc_org"].encode() + b'\n\n\n'
+            self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
+            self.ngc_config["ngc_org"].encode() + b'\n\n\n'
         )
         process.communicate(input=input_data)
         os.makedirs('/tmp/tao_models', exist_ok=True)
@@ -71,12 +71,13 @@ class NvidiaBase(dl.BaseModelAdapter):
         cli_filepath = os.path.join('/tmp', 'ngccli', 'ngc-cli', 'ngc')
         dest_path = os.path.join('/tmp', 'tao_models')
         cmd = [f'{cli_filepath} registry model download-version "{self.model_version}" --dest {dest_path}']
-        download_status = subprocess.Popen(cmd,
-                                           stdin=subprocess.PIPE,
-                                           stdout=subprocess.PIPE,
-                                           stderr=subprocess.PIPE,
-                                           shell=True
-                                           )
+        download_status = subprocess.Popen(
+            cmd,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
         download_status.wait()
         if download_status.returncode != 0:
             (stdout, stderr) = download_status.communicate()
@@ -88,7 +89,6 @@ class NvidiaBase(dl.BaseModelAdapter):
 
     def predict(self, batch, **kwargs):
         try:
-
             logger.info('predicting batch of size: {}'.format(len(batch)))
             logger.info(f'batch = {batch}')
 
@@ -99,11 +99,12 @@ class NvidiaBase(dl.BaseModelAdapter):
 
             os.makedirs(self.res_dir, exist_ok=True)
             cmd = self.get_cmd()
-            predict_status = subprocess.Popen(cmd,
-                                              stdout=subprocess.PIPE,
-                                              stderr=subprocess.PIPE,
-                                              shell=True
-                                              )
+            predict_status = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True
+            )
             predict_status.wait()
             if predict_status.returncode != 0:
                 (stdout, stderr) = predict_status.communicate()

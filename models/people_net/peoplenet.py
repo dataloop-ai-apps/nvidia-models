@@ -7,7 +7,6 @@ logger = logging.getLogger('[PeopleNet]')
 
 
 class PeopleNet(NvidiaBase):
-
     def get_cmd(self):
         return [
             f'detectnet_v2 inference '

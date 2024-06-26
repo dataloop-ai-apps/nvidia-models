@@ -7,7 +7,6 @@ logger = logging.getLogger('[FaceDetectIR]')
 
 
 class LPDNet(NvidiaBase):
-
     def get_cmd(self):
         tlt_filepath = os.path.join('/tmp', 'tao_models', 'lpdnet_vunpruned_v2.1', 'yolov4_tiny_usa_trainable.tlt')
         return [

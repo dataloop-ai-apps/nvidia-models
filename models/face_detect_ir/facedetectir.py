@@ -1,7 +1,6 @@
 import os
 import logging
 from models.model_adapter import NvidiaBase
-import dtlpy as dl
 from pathlib import Path
 
 logger = logging.getLogger('[FaceDetectIR]')
