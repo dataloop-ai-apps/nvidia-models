@@ -1,1 +1,2 @@
 open3d
+seaborn==0.13.2
