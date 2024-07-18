@@ -8,9 +8,12 @@
     ],
     "Category": "Model",
     "Provider": "NVIDIA",
-    "Media Type": "Image",
+    "Media Type": [
+      "Image"
+    ],
     "Computer Vision": "Object Detection",
-    "License": "EULA"
+    "License": "EULA",
+    "Deployed By": "Dataloop"
   },
   "displayName": "PeopleNet",
   "version": "0.2.5",
