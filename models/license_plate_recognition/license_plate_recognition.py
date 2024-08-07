@@ -1,96 +1,59 @@
 import os
-import logging
-import subprocess
-import dtlpy as dl
 import shutil
+import logging
+import dtlpy as dl
+from pathlib import Path
+from models.model_adapter import NvidiaBase
 
 logger = logging.getLogger('[LPRNet]')
 
 
-class LPRNet:
-    def __init__(self):
-        self.model_name = "lpr-net"
-        self.model_key = 'nvidia_tlt'
-        self.res_dir = os.path.join(os.getcwd(), 'lpr_res')
-        self.model_version = "nvidia/tao/lprnet:trainable_v1.0"
-        self.current_dir = os.path.dirname(str(__file__))
+class LPRNet(NvidiaBase):
 
-        # download model - the txt config file points to this location for the model
-        # logger.info("Downloading model artifacts")
-
-        cli_filepath = os.path.join('/tmp', 'ngccli', 'ngc-cli', 'ngc')
-        dest_path = os.path.join('/tmp', 'tao_models')
-        download_status = subprocess.Popen(
-            [f'{cli_filepath} registry model download-version "{self.model_version}" --dest {dest_path}'],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True
-        )
-        download_status.wait()
-        if download_status.returncode != 0:
-            (out, err) = download_status.communicate()
-            raise Exception(f'Failed loading the model: {err}')
-
-        # if not os.path.isfile("/tmp/tao_models/lprnet_vtrainable_v1.0/us_lprnet_baseline18_trainable.tlt"):
-        #     raise Exception("Failed loading the model")
-
-        src_filepath = os.path.join(self.current_dir, 'us_lp_characters.txt')
-        dst_filepath = os.path.join(dest_path, 'lprnet_vtrainable_v1.0', 'us_lp_characters.txt')
-        shutil.copyfile(src_filepath, dst_filepath)
-
-        # shutil.copyfile(f'{os.getcwd()}/models/LicensePlateRecognition/us_lp_characters.txt',
-        #                 f'/tmp/tao_models/lprnet_vtrainable_v1.0/us_lp_characters.txt')
-
-    def detect(self, images_dir):
-        ret = list()
-
-        specs_filepath = os.path.join(self.current_dir, "lprnet_spec.txt")
+    def get_cmd(self):
         tlt_filepath = os.path.join('/tmp', 'tao_models', 'lprnet_vtrainable_v1.0', 'us_lprnet_baseline18_trainable.tlt')
-        os.makedirs(self.res_dir, exist_ok=True)
-        # predict_status = subprocess.Popen([
-        #     f'lprnet inference '
-        #     f'-e {specs_filepath} '
-        #     f'-i {images_dir} '
-        #     f'-r {self.res_dir} '
-        #     f'-k {self.model_key} '
-        #     f'-m {tlt_filepath}'],
-        #     stdout=subprocess.PIPE,
-        #     stderr=subprocess.PIPE,
-        #     shell=True
-        # )
-        # predict_status.wait()
-        # if predict_status.returncode != 0:
-        #     (out, err) = predict_status.communicate()
-        #     raise Exception(f'Failed loading the model: {err}')
-        #
-        # output_lines = predict_status.stdout.readlines()
-
-        with os.popen(
+        return [
             f'lprnet inference '
-            f'-e {specs_filepath} '
-            f'-i {images_dir} '
+            f'-e {os.path.join(Path(__file__).parent.absolute(), "lprnet_spec.txt")}  '
+            f'-i {self.images_path} '
             f'-r {self.res_dir} '
-            f'-k {self.model_key} '
+            f'-k nvidia_tlt '
             f'-m {tlt_filepath}'
-        ) as f:
-            output_lines = f.readlines()
-            logger.info(f"Full Model Output:\n{''.join(output_lines)}")
+            ]
 
-        res_lines = [res_line for res_line in output_lines if
-                     res_line.startswith(tuple(os.listdir(images_dir)))]
-        results = {res.split(':')[0]: res.split(':')[1] for res in res_lines}
-        for image_path in os.listdir(images_dir):
-            image_annotations = dl.AnnotationCollection()
-            image_annotations.add(
-                annotation_definition=dl.Classification(
-                    label=results[image_path]
-                ),
-                model_info={
-                    'name': self.model_name,
-                    'confidence': 0.5
-                }
-            )
-            ret.append(image_annotations)
-            # logger.info(f'Full Annotation Result: {results[image_path]}')
-        return ret
+    def predict(self, batch, **kwargs):
+        try:
+            logger.info('predicting batch of size: {}'.format(len(batch)))
+            logger.info(f'batch = {batch}')
+
+            os.mkdir(self.images_path)
+            for i, item in enumerate(batch):
+                logger.info(f'item = {item}')
+                item.download(local_path=self.images_path)
+
+            os.makedirs(self.res_dir, exist_ok=True)
+            cmd = self.get_cmd()
+            with os.popen(cmd[0]) as f:
+                output_lines = f.readlines()
+            output_lines = [line[len(self.images_path) + 1:-2] for line in output_lines if
+                            line.startswith(self.images_path)]
+            outputs = {line.split(":")[0]: line.split(":")[1] for line in output_lines}
+
+            annotations_batch = list()
+            for image_path in os.listdir(self.images_path):
+                image_annotations = dl.AnnotationCollection()
+                result = outputs[image_path]
+                image_annotations.add(
+                    annotation_definition=dl.Classification(
+                        label=result
+                        ),
+                    model_info={
+                        'name': self.model_name,
+                        'confidence': 1.0
+                        }
+                    )
+                annotations_batch.append(image_annotations)
+
+        finally:
+            shutil.rmtree(self.images_path)
+        return annotations_batch

@@ -30,7 +30,7 @@ class NvidiaBase(dl.BaseModelAdapter):
         raise NotImplementedError("Please implement 'get_cmd' method in {}".format(self.__class__.__name__))
 
     def load(self, local_path, **kwargs):
-        model_name = self.model_entity.configuration.get("dash-cam-net")
+        model_name = self.model_entity.configuration.get("model_name")
         model_key = self.model_entity.configuration.get("model_key")
         model_version = self.model_entity.configuration.get("model_version")
 
