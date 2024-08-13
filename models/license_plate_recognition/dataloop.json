@@ -157,7 +157,7 @@
           "model_version": "nvidia/tao/lprnet:trainable_v1.0"
         },
         "inputType": "image",
-        "outputType": "note",
+        "outputType": "class",
         "labels": [],
         "metadata": {},
         "description": "The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images."

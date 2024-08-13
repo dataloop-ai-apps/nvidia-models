@@ -17,9 +17,17 @@ logger = logging.getLogger('[Nvidia Models]')
                               })
 class NvidiaBase(dl.BaseModelAdapter):
     def __init__(self, ngc_api_key_secret_name, ngc_org_secret_name, model_entity: dl.Model = None):
+        # Define Variables
+        self.model_name = None
+        self.model_key = None
+        self.model_version = None
+        self.res_dir = None
+
         self.images_path = None
         self.tao_model = None
         self.cmd = None
+
+        # Read NGC Config
         self.ngc_config = {
             "ngc_api_key": os.environ.get(ngc_api_key_secret_name),
             "ngc_org": os.environ.get(ngc_org_secret_name),
@@ -71,12 +79,13 @@ class NvidiaBase(dl.BaseModelAdapter):
         cli_filepath = os.path.join('/tmp', 'ngccli', 'ngc-cli', 'ngc')
         dest_path = os.path.join('/tmp', 'tao_models')
         cmd = [f'{cli_filepath} registry model download-version "{self.model_version}" --dest {dest_path}']
-        download_status = subprocess.Popen(cmd,
-                                           stdin=subprocess.PIPE,
-                                           stdout=subprocess.PIPE,
-                                           stderr=subprocess.PIPE,
-                                           shell=True
-                                           )
+        download_status = subprocess.Popen(
+            cmd,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
         download_status.wait()
         if download_status.returncode != 0:
             (stdout, stderr) = download_status.communicate()
@@ -88,7 +97,6 @@ class NvidiaBase(dl.BaseModelAdapter):
 
     def predict(self, batch, **kwargs):
         try:
-
             logger.info('predicting batch of size: {}'.format(len(batch)))
             logger.info(f'batch = {batch}')
 
@@ -99,39 +107,57 @@ class NvidiaBase(dl.BaseModelAdapter):
 
             os.makedirs(self.res_dir, exist_ok=True)
             cmd = self.get_cmd()
-            predict_status = subprocess.Popen(cmd,
-                                              stdout=subprocess.PIPE,
-                                              stderr=subprocess.PIPE,
-                                              shell=True
-                                              )
+            predict_status = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True
+            )
             predict_status.wait()
             if predict_status.returncode != 0:
                 (stdout, stderr) = predict_status.communicate()
                 logger.info(f'STDOUT:\n{stdout}')
                 logger.info(f'STDERR:\n{stderr}')
                 raise Exception(f'Failed running nvidia cli command: {" ".join(cmd)}. more logs above')
+
             annotations_batch = list()
             for image_path in os.listdir(self.images_path):
                 image_annotations = dl.AnnotationCollection()
                 output_filepath = os.path.join(self.res_dir, "labels", f"{Path(image_path).stem}.txt")
                 with open(output_filepath, 'r') as f:
                     for line in f.readlines():
-                        vals = line.split(' ')
-                        image_annotations.add(
-                            annotation_definition=dl.Box(
-                                label=vals[0],
-                                top=vals[5],
-                                left=vals[4],
-                                bottom=vals[7],
-                                right=vals[6]
-                            ),
-                            model_info={
-                                'name': self.model_name,
-                                'confidence': float(vals[-1]) / 100
-                            }
-                        )
-                        # logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
-                        # logger.info(f'Full Annotation Result: {vals}')
+                        if self.model_entity.configuration['model_name'] == 'lpr-net':
+                            if line.startswith(self.images_path):
+                                output_line = line[len(self.images_path) + 1:-2]
+                                # output = {output_line.split(":")[0]: output_line.split(":")[1]}
+                                # result = output[image_path]
+                                result = output_line.split(":")[1]
+                                image_annotations.add(
+                                    annotation_definition=dl.Classification(
+                                        label=result
+                                    ),
+                                    model_info={
+                                        'name': self.model_name,
+                                        'confidence': 1.0
+                                    }
+                                )
+                        else:
+                            vals = line.split(' ')
+                            image_annotations.add(
+                                annotation_definition=dl.Box(
+                                    label=vals[0],
+                                    top=vals[5],
+                                    left=vals[4],
+                                    bottom=vals[7],
+                                    right=vals[6]
+                                ),
+                                model_info={
+                                    'name': self.model_name,
+                                    'confidence': float(vals[-1]) / 100
+                                }
+                            )
+                            # logger.info(f'detected [left, top, bottom, right]: {vals[4:8]}')
+                            # logger.info(f'Full Annotation Result: {vals}')
                 annotations_batch.append(image_annotations)
 
         finally:
