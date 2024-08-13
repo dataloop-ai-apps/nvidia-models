@@ -95,6 +95,27 @@ class NvidiaBase(dl.BaseModelAdapter):
         if os.path.isdir(self.images_path):
             shutil.rmtree(self.images_path)
 
+    def _parse_lpr_results(self, predict_status):
+        # Parse outputs
+        output_lines = predict_status.stdout.readlines()
+        parsed_outputs = dict()
+        for line in output_lines:
+            line = line.decode('utf-8')
+            if line.startswith(self.images_path):
+                image_filepath, result = line.strip().split(":")
+                output_filename = f"{Path(image_filepath).stem}.txt"
+                output_results = parsed_outputs.get(output_filename, list())
+                output_results.append(result)
+                parsed_outputs.update({output_filename: output_results})
+
+        # Write outputs
+        os.makedirs(os.path.join(self.res_dir, "labels"), exist_ok=True)
+        for output_filename, output_results in parsed_outputs.items():
+            output_filepath = os.path.join(self.res_dir, "labels", output_filename)
+            with open(output_filepath, 'w') as f:
+                output_results = "\n".join(output_results)
+                f.write(output_results)
+
     def predict(self, batch, **kwargs):
         try:
             logger.info('predicting batch of size: {}'.format(len(batch)))
@@ -120,27 +141,27 @@ class NvidiaBase(dl.BaseModelAdapter):
                 logger.info(f'STDERR:\n{stderr}')
                 raise Exception(f'Failed running nvidia cli command: {" ".join(cmd)}. more logs above')
 
+            # Handle LPRNet results
+            if self.model_entity.configuration['model_name'] == 'lpr-net':
+                self._parse_lpr_results(predict_status=predict_status)
+
             annotations_batch = list()
             for image_path in os.listdir(self.images_path):
                 image_annotations = dl.AnnotationCollection()
                 output_filepath = os.path.join(self.res_dir, "labels", f"{Path(image_path).stem}.txt")
                 with open(output_filepath, 'r') as f:
                     for line in f.readlines():
-                        if self.model_entity.configuration['model_name'] == 'lpr-net':
-                            if line.startswith(self.images_path):
-                                output_line = line[len(self.images_path) + 1:-2]
-                                # output = {output_line.split(":")[0]: output_line.split(":")[1]}
-                                # result = output[image_path]
-                                result = output_line.split(":")[1]
-                                image_annotations.add(
-                                    annotation_definition=dl.Classification(
-                                        label=result
-                                    ),
-                                    model_info={
-                                        'name': self.model_name,
-                                        'confidence': 1.0
-                                    }
-                                )
+                        if self.model_entity.output_type == 'class':
+                            result = line.strip()
+                            image_annotations.add(
+                                annotation_definition=dl.Classification(
+                                    label=result
+                                ),
+                                model_info={
+                                    'name': self.model_name,
+                                    'confidence': 1.0
+                                }
+                            )
                         else:
                             vals = line.split(' ')
                             image_annotations.add(
