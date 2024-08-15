@@ -27,7 +27,7 @@
         "runtime": {
           "podType": "gpu-t4",
           "concurrency": 1,
-          "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.2",
+          "runnerImage": "gcr.io/viewo-g/piper/agent/runner/gpu/nvidia-tao:0.1.3",
           "autoscaler": {
             "type": "rabbitmq",
             "minReplicas": 0,
