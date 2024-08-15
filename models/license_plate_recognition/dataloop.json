@@ -1,6 +1,6 @@
 {
   "name": "lpr-net",
-  "description": "An app to install the License Plate Detection (LPDNet) model. The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images.",
+  "description": "An app to install the License Plate Recognition (LPRNet) model. The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images.",
   "attributes": {
     "Hub": [
       "Nvidia",
@@ -45,8 +45,8 @@
     "modules": [
       {
         "name": "lpr-net-module",
-        "entryPoint": "models/model_adapter.py",
-        "className": "TaoModelAdapter",
+        "entryPoint": "models/license_plate_recognition/license_plate_recognition.py",
+        "className": "LPRNet",
         "computeConfig": "lpr-net-deploy",
         "initInputs": [
           {
@@ -153,10 +153,11 @@
         "status": "pre-trained",
         "configuration": {
           "model_name": "lpr-net",
-          "model_config": {}
+          "model_key": "nvidia_tlt",
+          "model_version": "nvidia/tao/lprnet:trainable_v1.0"
         },
         "inputType": "image",
-        "outputType": "note",
+        "outputType": "class",
         "labels": [],
         "metadata": {},
         "description": "The model is license plate recognition network, which aims to recognize characters in license plates from cropped RGB license plate images."
