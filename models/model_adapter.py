@@ -59,7 +59,7 @@ class NvidiaBase(dl.BaseModelAdapter):
             stderr=subprocess.PIPE,
             shell=True
         )
-        logger.info('adding ngccli to system PATH environment variable')
+        logger.info('adding ngc-cli to system PATH environment variable')
         if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
             os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
 
