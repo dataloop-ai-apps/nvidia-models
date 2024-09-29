@@ -38,37 +38,44 @@ class NvidiaBase(dl.BaseModelAdapter):
         raise NotImplementedError("Please implement 'get_cmd' method in {}".format(self.__class__.__name__))
 
     def parse_results(self, predict_status):
+        # Currently used by lpr-net
         pass
+
+    @staticmethod
+    def _prepare_ngc_cli():
+        logger.info('downloading "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip"')
+        subprocess.Popen(
+            ['wget "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip" -O /tmp/ngccli/ngccli_cat_linux.zip'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+        logger.info('unzipping "ngccli_cat_linux.zip" updated files')
+        subprocess.Popen(
+            ['unzip -u /tmp/ngccli/ngccli_cat_linux.zip -d /tmp/ngccli/'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+        logger.info('adding ngccli to system PATH environment variable')
+        if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
+            os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
 
     def load(self, local_path, **kwargs):
         model_name = self.model_entity.configuration.get("model_name")
         model_key = self.model_entity.configuration.get("model_key")
         model_version = self.model_entity.configuration.get("model_version")
 
-        # Remove "downloading ngc" section when there is a working image with ngc-cli
-
-        # Download ngccli_cat_linux.zip (if required)
-        if not os.path.exists('/tmp/ngccli/ngccli_cat_linux.zip'):
-            logger.info('downloading ngc')
-            os.makedirs('/tmp/ngccli', exist_ok=True)
-            with os.popen(f'wget "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip" -P /tmp/ngccli') as f:
-                output = f.read().strip()
-            print("WGET:\n" + output)
-
-        # Unzip ngccli_cat_linux.zip
-        with os.popen(f'unzip -u /tmp/ngccli/ngccli_cat_linux.zip -d /tmp/ngccli/') as f:
-            output = f.read().strip()
-        print("UNZIP:\n" + output)
-
-        # Add ngc-cli to PATH (if required)
-        if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
-            os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
-
+        self._prepare_ngc_cli()
         logger.info('login to ngc')
-        process = subprocess.Popen(['/tmp/ngccli/ngc-cli/ngc config set'],
-                                   stdin=subprocess.PIPE,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE, shell=True)
+        process = subprocess.Popen(
+            ['/tmp/ngccli/ngc-cli/ngc config set'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, shell=True
+        )
         input_data = (
                 self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
                 self.ngc_config["ngc_org"].encode() + b'\n\n\n'
