@@ -45,21 +45,27 @@ class NvidiaBase(dl.BaseModelAdapter):
     def _prepare_ngc_cli():
         os.makedirs(name='/tmp/ngccli', exist_ok=True)
         logger.info('downloading "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip"')
-        subprocess.Popen(
+        wget_command = subprocess.Popen(
             ['wget "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip" -O /tmp/ngccli/ngccli_cat_linux.zip'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             shell=True
         )
+        wget_command.wait()
+        if wget_command.returncode != 0:
+            raise ValueError('Failed downloading ngccli_cat_linux.zip')
         logger.info('unzipping "ngccli_cat_linux.zip" updated files')
-        subprocess.Popen(
+        unzip_command = subprocess.Popen(
             ['unzip -u /tmp/ngccli/ngccli_cat_linux.zip -d /tmp/ngccli/'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             shell=True
         )
+        unzip_command.wait()
+        if unzip_command.returncode != 0:
+            raise ValueError('Failed unzipping ngccli_cat_linux.zip')
         logger.info('adding ngccli to system PATH environment variable')
         if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
             os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
@@ -75,11 +81,12 @@ class NvidiaBase(dl.BaseModelAdapter):
             ['/tmp/ngccli/ngc-cli/ngc config set'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE, shell=True
+            stderr=subprocess.PIPE,
+            shell=True
         )
         input_data = (
-                self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
-                self.ngc_config["ngc_org"].encode() + b'\n\n\n'
+            self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
+            self.ngc_config["ngc_org"].encode() + b'\n\n\n'
         )
         process.communicate(input=input_data)
         os.makedirs('/tmp/tao_models', exist_ok=True)
