@@ -43,6 +43,7 @@ class NvidiaBase(dl.BaseModelAdapter):
 
     @staticmethod
     def _prepare_ngc_cli():
+        os.makedirs(name='/tmp/ngccli', exist_ok=True)
         logger.info('downloading "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip"')
         subprocess.Popen(
             ['wget "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip" -O /tmp/ngccli/ngccli_cat_linux.zip'],
@@ -59,7 +60,7 @@ class NvidiaBase(dl.BaseModelAdapter):
             stderr=subprocess.PIPE,
             shell=True
         )
-        logger.info('adding ngc-cli to system PATH environment variable')
+        logger.info('adding ngccli to system PATH environment variable')
         if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
             os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
 
