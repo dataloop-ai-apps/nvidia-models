@@ -46,22 +46,21 @@ class NvidiaBase(dl.BaseModelAdapter):
         os.makedirs(name='/tmp/ngccli', exist_ok=True)
         logger.info('downloading "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip"')
         wget_command = subprocess.Popen(
-            ['wget "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip" -O /tmp/ngccli/ngccli_cat_linux.zip'],
+            ['wget', 'https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip',
+             '-O', '/tmp/ngccli/ngccli_cat_linux.zip'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True
+            stderr=subprocess.PIPE
         )
         wget_command.wait()
         if wget_command.returncode != 0:
             raise ValueError('Failed downloading ngccli_cat_linux.zip')
         logger.info('unzipping "ngccli_cat_linux.zip" updated files')
         unzip_command = subprocess.Popen(
-            ['unzip -u /tmp/ngccli/ngccli_cat_linux.zip -d /tmp/ngccli/'],
+            ['unzip', '-u', '/tmp/ngccli/ngccli_cat_linux.zip', '-d', '/tmp/ngccli/'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True
+            stderr=subprocess.PIPE
         )
         unzip_command.wait()
         if unzip_command.returncode != 0:
@@ -78,11 +77,10 @@ class NvidiaBase(dl.BaseModelAdapter):
         self._prepare_ngc_cli()
         logger.info('login to ngc')
         process = subprocess.Popen(
-            ['/tmp/ngccli/ngc-cli/ngc config set'],
+            ['/tmp/ngccli/ngc-cli/ngc', 'config', 'set'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True
+            stderr=subprocess.PIPE
         )
         input_data = (
             self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
@@ -104,13 +102,12 @@ class NvidiaBase(dl.BaseModelAdapter):
 
         cli_filepath = os.path.join('/tmp', 'ngccli', 'ngc-cli', 'ngc')
         dest_path = os.path.join('/tmp', 'tao_models')
-        cmd = [f'{cli_filepath} registry model download-version "{self.model_version}" --dest {dest_path}']
+        cmd = [cli_filepath, 'registry', 'model', 'download-version', self.model_version, '--dest', dest_path]
         download_status = subprocess.Popen(
             cmd,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True
+            stderr=subprocess.PIPE
         )
         download_status.wait()
         if download_status.returncode != 0:
@@ -136,8 +133,7 @@ class NvidiaBase(dl.BaseModelAdapter):
             predict_status = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                shell=True
+                stderr=subprocess.PIPE
             )
             predict_status.wait()
             if predict_status.returncode != 0:

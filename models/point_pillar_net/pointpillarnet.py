@@ -24,11 +24,10 @@ class PointPillarNet:
         cli_filepath = os.path.join('/tmp', 'ngccli', 'ngc-cli', 'ngc')
         dest_path = os.path.join('/tmp', 'tao_models')
         download_status = subprocess.Popen(
-            [f'{cli_filepath} registry model download-version "{self.model_version}" --dest {dest_path}'],
+            [cli_filepath, 'registry', 'model', 'download-version', self.model_version, '--dest', dest_path],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True
+            stderr=subprocess.PIPE
         )
         download_status.wait()
         if download_status.returncode != 0:
@@ -60,14 +59,13 @@ class PointPillarNet:
 
         specs_filepath = os.path.join(self.current_dir, "inference_spec.yaml")
         os.makedirs(self.res_dir, exist_ok=True)
-        predict_status = subprocess.Popen([
-            f'pointpillars inference '
-            f'-e {specs_filepath} '
-            f'-r {self.res_dir} '
-            f'-k {self.model_key}'],
+        predict_status = subprocess.Popen(
+            ['pointpillars', 'inference',
+             '-e', specs_filepath,
+             '-r', self.res_dir,
+             '-k', self.model_key],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True
+            stderr=subprocess.PIPE
         )
         predict_status.wait()
         if predict_status.returncode != 0:
