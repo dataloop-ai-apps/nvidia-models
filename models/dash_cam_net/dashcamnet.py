@@ -11,8 +11,9 @@ class DashCamNet(NvidiaBase):
 
     def get_cmd(self):
         return [
-            f'detectnet_v2 inference '
-            f'-e {os.path.join(Path(__file__).parent.absolute(), "inference_spec.txt")} '
-            f'-i {self.images_path} '
-            f'-r {self.res_dir} '
-            f'-k {self.model_key}']
+            'detectnet_v2', 'inference',
+            '-e', str(os.path.join(Path(__file__).parent.absolute(), "inference_spec.txt")),
+            '-i', self.images_path,
+            '-r', self.res_dir,
+            '-k', self.model_key
+        ]
