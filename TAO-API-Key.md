@@ -34,7 +34,7 @@
 
 ![8.png](assets/8.png)
 
-8. In Dataloop platform add the Api Key and Org as 2 secrets:
+8. In DDOE platform add the Api Key and Org as 2 secrets:
 
 ![9.png](assets%2F9.png)
 
