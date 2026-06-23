@@ -1,10 +1,10 @@
-# NVIDIA TAO Models in Dataloop
+# NVIDIA TAO Models in DDOE
 
-This repository provides an adapter to NVIDIA TAO Models for the Dataloop platform.
+This repository provides an adapter to NVIDIA TAO Models for the DDOE platform.
 
 # Available TAO Model:
 
-The following models from [NGC Catalog](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/containers/tao-toolkit) are available for installation on Dataloop platform:
+The following models from [NGC Catalog](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/containers/tao-toolkit) are available for installation on DDOE platform:
 1. [DashCamNet](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/models/dashcamnet):
    1. `Description:` The model detects one or more physical objects from four categories within an image and returns a box around each object, as well as a category label for each object. The four categories of objects detected by this model are – car, persons, road signs and bicycles.
    2. `Labels:` car, bicycle, person, road_sign
