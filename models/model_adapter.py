@@ -44,6 +44,24 @@ class NvidiaBase(dl.BaseModelAdapter):
     def get_cmd(self):
         raise NotImplementedError("Please implement 'get_cmd' method in {}".format(self.__class__.__name__))
 
+    @staticmethod
+    def _find_binary(binary_name):
+        import shutil
+        path = shutil.which(binary_name)
+        if path:
+            logger.info(f"Found '{binary_name}' in PATH at: {path}")
+            return path
+        search = subprocess.run(
+            ['find', '/opt', '/usr', '/home', '/tmp/.local', '-name', binary_name, '-type', 'f'],
+            capture_output=True, timeout=30
+        )
+        locations = [loc for loc in search.stdout.decode().splitlines() if loc.strip()]
+        logger.info(f"'find' results for '{binary_name}': {locations}")
+        for loc in locations:
+            if os.access(loc, os.X_OK):
+                return loc
+        raise FileNotFoundError(f"Binary '{binary_name}' not found anywhere in the container. Searched PATH and /opt /usr /home /tmp/.local")
+
     def parse_results(self, predict_status):
         # Currently used by lpr-net
         pass
@@ -151,9 +169,7 @@ class NvidiaBase(dl.BaseModelAdapter):
 
             os.makedirs(self.res_dir, exist_ok=True)
             cmd = self.get_cmd()
-            import shutil
-            logger.info(f"tao binary location: {shutil.which('tao')}")
-            logger.info(f"PATH: {os.environ.get('PATH')}")
+            cmd[0] = self._find_binary(cmd[0])
             logger.info(f"cmd: {cmd}")
             predict_status = subprocess.Popen(
                 cmd,
