@@ -59,11 +59,15 @@ class NvidiaBase(dl.BaseModelAdapter):
                 capture_output=True
             )
             if result.returncode != 0:
+                logger.error(f'Failed downloading ngccli_cat_linux.zip: {result.stderr.decode()}')
                 raise ValueError(f'Failed downloading ngccli_cat_linux.zip: {result.stderr.decode()}')
         except FileNotFoundError:
+            logger.error('wget not found on system PATH')
             raise RuntimeError('wget not found on system PATH')
         except subprocess.SubprocessError as e:
+            logger.error(f'Failed to run wget: {e}')
             raise RuntimeError(f'Failed to run wget: {e}')
+        logger.info('unzipping ngccli_cat_linux.zip')
         unzip_command = subprocess.Popen(
             ['unzip', '-u', '/tmp/ngccli/ngccli_cat_linux.zip', '-d', '/tmp/ngccli/'],
             stdin=subprocess.PIPE,
@@ -72,6 +76,7 @@ class NvidiaBase(dl.BaseModelAdapter):
         )
         unzip_command.wait()
         if unzip_command.returncode != 0:
+            logger.error(f'Failed unzipping ngccli_cat_linux.zip: {unzip_command.stderr.decode()}')
             raise ValueError('Failed unzipping ngccli_cat_linux.zip')
         logger.info('adding ngccli to system PATH environment variable')
         if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
