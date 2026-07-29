@@ -60,6 +60,9 @@ class NvidiaBase(dl.BaseModelAdapter):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
+            _, stderr_output = wget_command.communicate()
+            if wget_command.returncode != 0:
+                raise ValueError(f'Failed downloading ngccli_cat_linux.zip: {stderr_output.decode()}')
             wget_command.wait()
             if wget_command.returncode != 0:
                 raise ValueError('Failed downloading ngccli_cat_linux.zip')
