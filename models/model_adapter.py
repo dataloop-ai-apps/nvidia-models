@@ -74,12 +74,10 @@ class NvidiaBase(dl.BaseModelAdapter):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        logger.info("unzipping ngccli_cat_linux.zip")
-        unzip_command.wait()
-        logger.info(f"unzip command return code: {unzip_command.returncode}")
+        _, stderr_output = unzip_command.communicate()
         if unzip_command.returncode != 0:
-            logger.error(f'Failed unzipping ngccli_cat_linux.zip: {unzip_command.stderr.decode()}')
-            raise ValueError('Failed unzipping ngccli_cat_linux.zip')
+            logger.error(f'Failed unzipping ngccli_cat_linux.zip: {stderr_output.decode()}')
+            raise ValueError(f'Failed unzipping ngccli_cat_linux.zip: {stderr_output.decode()}')
         logger.info('adding ngccli to system PATH environment variable')
         if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
             os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
