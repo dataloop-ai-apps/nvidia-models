@@ -48,6 +48,24 @@ class NvidiaBase(dl.BaseModelAdapter):
     def _build_bash_cmd(cmd):
         import shlex
         bash_cmd = ' '.join(shlex.quote(c) for c in cmd)
+
+        for entrypoint in ['/nvidia_entrypoint.sh', '/opt/nvidia/entrypoint.sh', '/opt/entrypoint.sh']:
+            if os.path.isfile(entrypoint):
+                logger.info(f"Using NVIDIA entrypoint: {entrypoint}")
+                return ['bash', entrypoint] + cmd
+
+        tao_pkg = subprocess.run(
+            ['find', '/', '-name', 'nvidia_tao_tf1', '-type', 'd', '-maxdepth', '10'],
+            capture_output=True, timeout=30
+        )
+        logger.info(f"nvidia_tao_tf1 package dirs: {tao_pkg.stdout.decode().splitlines()}")
+
+        entrypoints = subprocess.run(
+            ['find', '/', '-name', '*entrypoint*', '-maxdepth', '6'],
+            capture_output=True, timeout=30
+        )
+        logger.info(f"Entrypoint files: {entrypoints.stdout.decode().splitlines()[:20]}")
+
         logger.info(f"Running via bash login shell: {bash_cmd}")
         return ['bash', '-lc', bash_cmd]
 
