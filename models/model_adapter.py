@@ -45,30 +45,11 @@ class NvidiaBase(dl.BaseModelAdapter):
         raise NotImplementedError("Please implement 'get_cmd' method in {}".format(self.__class__.__name__))
 
     @staticmethod
-    def _find_binary(binary_name):
-        import shutil
-        path = shutil.which(binary_name)
-        if path:
-            logger.info(f"Found '{binary_name}' in PATH at: {path}")
-            return path
-        logger.info(f"PATH: {os.environ.get('PATH')}")
-        search = subprocess.run(
-            ['find', '/opt', '/usr', '/home', '/root', '/tmp',
-             '-name', binary_name, '-maxdepth', '10'],
-            capture_output=True, timeout=60
-        )
-        locations = [loc for loc in search.stdout.decode().splitlines() if loc.strip()]
-        logger.info(f"'find' results for '{binary_name}': {locations}")
-        for loc in locations:
-            if os.access(loc, os.X_OK):
-                return loc
-        diag = subprocess.run(
-            ['find', '/opt', '/usr', '/root', '/tmp', '-maxdepth', '8',
-             '-name', '*yolo*', '-o', '-name', '*tao*', '-o', '-name', '*detectnet*'],
-            capture_output=True, timeout=60
-        )
-        logger.info(f"Diagnostic TAO-related files: {diag.stdout.decode().splitlines()[:30]}")
-        raise FileNotFoundError(f"Binary '{binary_name}' not found. See diagnostic logs above.")
+    def _build_bash_cmd(cmd):
+        import shlex
+        bash_cmd = ' '.join(shlex.quote(c) for c in cmd)
+        logger.info(f"Running via bash login shell: {bash_cmd}")
+        return ['bash', '-lc', bash_cmd]
 
     def parse_results(self, predict_status):
         # Currently used by lpr-net
@@ -177,10 +158,9 @@ class NvidiaBase(dl.BaseModelAdapter):
 
             os.makedirs(self.res_dir, exist_ok=True)
             cmd = self.get_cmd()
-            cmd[0] = self._find_binary(cmd[0])
             logger.info(f"cmd: {cmd}")
             predict_status = subprocess.Popen(
-                cmd,
+                self._build_bash_cmd(cmd),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
