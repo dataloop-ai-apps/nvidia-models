@@ -51,16 +51,24 @@ class NvidiaBase(dl.BaseModelAdapter):
         if path:
             logger.info(f"Found '{binary_name}' in PATH at: {path}")
             return path
+        logger.info(f"PATH: {os.environ.get('PATH')}")
         search = subprocess.run(
-            ['find', '/opt', '/usr', '/home', '/tmp/.local', '-name', binary_name, '-type', 'f'],
-            capture_output=True, timeout=30
+            ['find', '/opt', '/usr', '/home', '/root', '/tmp',
+             '-name', binary_name, '-maxdepth', '10'],
+            capture_output=True, timeout=60
         )
         locations = [loc for loc in search.stdout.decode().splitlines() if loc.strip()]
         logger.info(f"'find' results for '{binary_name}': {locations}")
         for loc in locations:
             if os.access(loc, os.X_OK):
                 return loc
-        raise FileNotFoundError(f"Binary '{binary_name}' not found anywhere in the container. Searched PATH and /opt /usr /home /tmp/.local")
+        diag = subprocess.run(
+            ['find', '/opt', '/usr', '/root', '/tmp', '-maxdepth', '8',
+             '-name', '*yolo*', '-o', '-name', '*tao*', '-o', '-name', '*detectnet*'],
+            capture_output=True, timeout=60
+        )
+        logger.info(f"Diagnostic TAO-related files: {diag.stdout.decode().splitlines()[:30]}")
+        raise FileNotFoundError(f"Binary '{binary_name}' not found. See diagnostic logs above.")
 
     def parse_results(self, predict_status):
         # Currently used by lpr-net
