@@ -74,13 +74,16 @@ class NvidiaBase(dl.BaseModelAdapter):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
+        logger.info("unzipping ngccli_cat_linux.zip")
         unzip_command.wait()
+        logger.info(f"unzip command return code: {unzip_command.returncode}")
         if unzip_command.returncode != 0:
             logger.error(f'Failed unzipping ngccli_cat_linux.zip: {unzip_command.stderr.decode()}')
             raise ValueError('Failed unzipping ngccli_cat_linux.zip')
         logger.info('adding ngccli to system PATH environment variable')
         if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
             os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
+        logger.info("end of _prepare_ngc_cli")
 
     def load(self, local_path, **kwargs):
         model_name = self.model_entity.configuration.get("model_name")
@@ -95,12 +98,15 @@ class NvidiaBase(dl.BaseModelAdapter):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
+        logger.info("sending ngc config set command")
         input_data = (
             self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
             self.ngc_config["ngc_org"].encode() + b'\n\n\n'
         )
         process.communicate(input=input_data)
+        logger.info("ngc config set command executed")
         os.makedirs('/tmp/tao_models', exist_ok=True)
+        logger.info("model directory created")
 
         logger.info('loading model')
         self.images_path = os.path.join(os.getcwd(), 'images')
