@@ -53,19 +53,13 @@ class NvidiaBase(dl.BaseModelAdapter):
         os.makedirs(name='/tmp/ngccli', exist_ok=True)
         logger.info('downloading "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip"')
         try:
-            wget_command = subprocess.Popen(
+            result = subprocess.run(
                 ['wget', 'https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip',
                 '-O', '/tmp/ngccli/ngccli_cat_linux.zip'],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                capture_output=True
             )
-            _, stderr_output = wget_command.communicate()
-            if wget_command.returncode != 0:
-                raise ValueError(f'Failed downloading ngccli_cat_linux.zip: {stderr_output.decode()}')
-            wget_command.wait()
-            if wget_command.returncode != 0:
-                raise ValueError('Failed downloading ngccli_cat_linux.zip')
+            if result.returncode != 0:
+                raise ValueError(f'Failed downloading ngccli_cat_linux.zip: {result.stderr.decode()}')
         except FileNotFoundError:
             raise RuntimeError('wget not found on system PATH')
         except subprocess.SubprocessError as e:
