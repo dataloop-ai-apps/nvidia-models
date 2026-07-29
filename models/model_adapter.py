@@ -29,12 +29,6 @@ class NvidiaBase(dl.BaseModelAdapter):
 
         import os
 
-        env_vars = dict(os.environ)
-        print("=== Environment Variables ===")
-        for key, value in env_vars.items():
-            print(f"{key}={value}")
-        print("=== End Environment Variables ===")
-
         # Read NGC Config
         self.ngc_config = {
             "ngc_api_key": os.environ.get(ngc_api_key_secret_name),
@@ -44,7 +38,6 @@ class NvidiaBase(dl.BaseModelAdapter):
         logger.info(f"NGC Config ngc_org_secret_name: {ngc_org_secret_name}")
         logger.info(f"NGC Config ngc_api_key: {self.ngc_config['ngc_api_key']}")
         logger.info(f"NGC Config ngc_org: {self.ngc_config['ngc_org']}")
-        logger.info(f"NGC Config keys: {list(os.environ.keys())}")
         
         super(NvidiaBase, self).__init__(model_entity)
 
