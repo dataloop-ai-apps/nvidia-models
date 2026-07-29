@@ -38,7 +38,6 @@ class NvidiaBase(dl.BaseModelAdapter):
         logger.info(f"NGC Config ngc_org_secret_name: {ngc_org_secret_name}")
         logger.info(f"NGC Config ngc_api_key: {self.ngc_config['ngc_api_key']}")
         logger.info(f"NGC Config ngc_org: {self.ngc_config['ngc_org']}")
-        logger.info(f"NGC Config keys: {list(os.environ.keys())}")
         
         super(NvidiaBase, self).__init__(model_entity)
 
@@ -53,17 +52,21 @@ class NvidiaBase(dl.BaseModelAdapter):
     def _prepare_ngc_cli():
         os.makedirs(name='/tmp/ngccli', exist_ok=True)
         logger.info('downloading "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip"')
-        wget_command = subprocess.Popen(
-            ['wget', 'https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip',
-             '-O', '/tmp/ngccli/ngccli_cat_linux.zip'],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        wget_command.wait()
-        if wget_command.returncode != 0:
-            raise ValueError('Failed downloading ngccli_cat_linux.zip')
-        logger.info('unzipping "ngccli_cat_linux.zip" updated files')
+        try:
+            wget_command = subprocess.Popen(
+                ['wget', 'https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip',
+                '-O', '/tmp/ngccli/ngccli_cat_linux.zip'],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            wget_command.wait()
+            if wget_command.returncode != 0:
+                raise ValueError('Failed downloading ngccli_cat_linux.zip')
+        except FileNotFoundError:
+            raise RuntimeError('wget not found on system PATH')
+        except subprocess.SubprocessError as e:
+            raise RuntimeError(f'Failed to run wget: {e}')
         unzip_command = subprocess.Popen(
             ['unzip', '-u', '/tmp/ngccli/ngccli_cat_linux.zip', '-d', '/tmp/ngccli/'],
             stdin=subprocess.PIPE,
