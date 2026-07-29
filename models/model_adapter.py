@@ -81,6 +81,10 @@ class NvidiaBase(dl.BaseModelAdapter):
         logger.info('adding ngccli to system PATH environment variable')
         if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
             os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
+        for tao_bin_dir in ['/opt/conda/bin', '/opt/conda/envs/tao/bin', '/usr/local/bin', os.path.expanduser('~/.local/bin')]:
+            if os.path.isdir(tao_bin_dir) and tao_bin_dir not in os.environ.get('PATH', ''):
+                os.environ['PATH'] = f"{tao_bin_dir}:{os.environ.get('PATH', '')}"
+        logger.info(f"PATH after setup: {os.environ.get('PATH')}")
         logger.info("end of _prepare_ngc_cli")
 
     def load(self, local_path, **kwargs):
@@ -147,14 +151,17 @@ class NvidiaBase(dl.BaseModelAdapter):
 
             os.makedirs(self.res_dir, exist_ok=True)
             cmd = self.get_cmd()
+            import shutil
+            logger.info(f"tao binary location: {shutil.which('tao')}")
+            logger.info(f"PATH: {os.environ.get('PATH')}")
+            logger.info(f"cmd: {cmd}")
             predict_status = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
-            predict_status.wait()
+            stdout, stderr = predict_status.communicate()
             if predict_status.returncode != 0:
-                (stdout, stderr) = predict_status.communicate()
                 logger.info(f'STDOUT:\n{stdout}')
                 logger.info(f'STDERR:\n{stderr}')
                 raise Exception(f'Failed running nvidia cli command: {" ".join(cmd)}. more logs above')
