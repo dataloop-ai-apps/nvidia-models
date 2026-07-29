@@ -38,6 +38,7 @@ class NvidiaBase(dl.BaseModelAdapter):
         logger.info(f"NGC Config ngc_org_secret_name: {ngc_org_secret_name}")
         logger.info(f"NGC Config ngc_api_key: {self.ngc_config['ngc_api_key']}")
         logger.info(f"NGC Config ngc_org: {self.ngc_config['ngc_org']}")
+        logger.info(f"NGC Config keys: {list(os.environ.keys())}")
         
         super(NvidiaBase, self).__init__(model_entity)
 
