@@ -131,6 +131,13 @@ class NvidiaBase(dl.BaseModelAdapter):
         nvidia_bin = subprocess.run(['ls', '/usr/local/nvidia/bin/'], capture_output=True, text=True)
         logger.info(f"/usr/local/nvidia/bin: {nvidia_bin.stdout.strip() or nvidia_bin.stderr.strip()}")
         logger.info(f"IS_GPU_AVAILABLE={os.environ.get('IS_GPU_AVAILABLE', 'NOT SET')}")
+        find_tao = subprocess.run(
+            ['find', '/opt', '/', '-name', 'yolo_v4_tiny', '-maxdepth', '8'],
+            capture_output=True, text=True, timeout=30
+        )
+        logger.info(f"yolo_v4_tiny locations: {find_tao.stdout.strip().splitlines()}")
+        conda_envs = subprocess.run(['ls', '/opt/conda/envs/'], capture_output=True, text=True)
+        logger.info(f"conda envs: {conda_envs.stdout.strip() or conda_envs.stderr.strip()}")
 
         logger.info('loading model')
         self.images_path = os.path.join(os.getcwd(), 'images')
