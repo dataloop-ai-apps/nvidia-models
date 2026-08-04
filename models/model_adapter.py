@@ -27,8 +27,6 @@ class NvidiaBase(dl.BaseModelAdapter):
         self.tao_model = None
         self.cmd = None
 
-        import os
-
         # Read NGC Config
         self.ngc_config = {
             "ngc_api_key": os.environ.get(ngc_api_key_secret_name),
@@ -47,27 +45,14 @@ class NvidiaBase(dl.BaseModelAdapter):
     @staticmethod
     def _build_bash_cmd(cmd):
         import shlex
-        bash_cmd = ' '.join(shlex.quote(c) for c in cmd)
-
         for entrypoint in ['/nvidia_entrypoint.sh', '/opt/nvidia/entrypoint.sh', '/opt/entrypoint.sh']:
             if os.path.isfile(entrypoint):
                 logger.info(f"Using NVIDIA entrypoint: {entrypoint}")
                 return ['bash', entrypoint] + cmd
 
-        tao_pkg = subprocess.run(
-            ['find', '/', '-name', 'nvidia_tao_tf1', '-type', 'd', '-maxdepth', '10'],
-            capture_output=True, timeout=30
-        )
-        logger.info(f"nvidia_tao_tf1 package dirs: {tao_pkg.stdout.decode().splitlines()}")
-
-        entrypoints = subprocess.run(
-            ['find', '/', '-name', '*entrypoint*', '-maxdepth', '6'],
-            capture_output=True, timeout=30
-        )
-        logger.info(f"Entrypoint files: {entrypoints.stdout.decode().splitlines()[:20]}")
-
-        logger.info(f"Running via bash login shell: {bash_cmd}")
-        return ['bash', '-lc', bash_cmd]
+        bash_cmd = ' '.join(shlex.quote(c) for c in cmd)
+        logger.info(f"Running via bash (non-login shell): {bash_cmd}")
+        return ['bash', '-c', bash_cmd]
 
     def parse_results(self, predict_status):
         # Currently used by lpr-net
@@ -110,7 +95,6 @@ class NvidiaBase(dl.BaseModelAdapter):
             if os.path.isdir(tao_bin_dir) and tao_bin_dir not in os.environ.get('PATH', ''):
                 os.environ['PATH'] = f"{tao_bin_dir}:{os.environ.get('PATH', '')}"
         logger.info(f"PATH after setup: {os.environ.get('PATH')}")
-        logger.info("end of _prepare_ngc_cli")
 
     def load(self, local_path, **kwargs):
         model_name = self.model_entity.configuration.get("model_name")
@@ -134,6 +118,19 @@ class NvidiaBase(dl.BaseModelAdapter):
         logger.info("ngc config set command executed")
         os.makedirs('/tmp/tao_models', exist_ok=True)
         logger.info("model directory created")
+
+        tao_pkg = subprocess.run(
+            ['find', '/', '-name', 'nvidia_tao_tf1', '-type', 'd', '-maxdepth', '10'],
+            capture_output=True, timeout=30
+        )
+        logger.info(f"nvidia_tao_tf1 package dirs: {tao_pkg.stdout.decode().splitlines()}")
+        which_result = subprocess.run(['which', 'yolo_v4_tiny'], capture_output=True, text=True)
+        logger.info(f"yolo_v4_tiny binary: {which_result.stdout.strip() or 'NOT FOUND in PATH'}")
+        which_smi = subprocess.run(['which', 'nvidia-smi'], capture_output=True, text=True)
+        logger.info(f"nvidia-smi binary: {which_smi.stdout.strip() or 'NOT FOUND in PATH'}")
+        nvidia_bin = subprocess.run(['ls', '/usr/local/nvidia/bin/'], capture_output=True, text=True)
+        logger.info(f"/usr/local/nvidia/bin: {nvidia_bin.stdout.strip() or nvidia_bin.stderr.strip()}")
+        logger.info(f"IS_GPU_AVAILABLE={os.environ.get('IS_GPU_AVAILABLE', 'NOT SET')}")
 
         logger.info('loading model')
         self.images_path = os.path.join(os.getcwd(), 'images')
