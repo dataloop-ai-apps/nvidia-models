@@ -138,6 +138,12 @@ class NvidiaBase(dl.BaseModelAdapter):
         logger.info(f"yolo_v4_tiny locations: {find_tao.stdout.strip().splitlines()}")
         conda_envs = subprocess.run(['ls', '/opt/conda/envs/'], capture_output=True, text=True)
         logger.info(f"conda envs: {conda_envs.stdout.strip() or conda_envs.stderr.strip()}")
+        ls_local_bin = subprocess.run(['ls', '/usr/local/bin/'], capture_output=True, text=True)
+        logger.info(f"/usr/local/bin: {ls_local_bin.stdout.strip()}")
+        find_tao_cmd = subprocess.run(['find', '/', '-name', 'tao', '-type', 'f'], capture_output=True, text=True, timeout=30)
+        logger.info(f"tao binary locations: {find_tao_cmd.stdout.strip().splitlines()}")
+        find_yolo_broad = subprocess.run(['find', '/', '-name', '*yolo*', '-maxdepth', '15'], capture_output=True, text=True, timeout=60)
+        logger.info(f"yolo* files: {find_yolo_broad.stdout.strip().splitlines()[:20]}")
 
         logger.info('loading model')
         self.images_path = os.path.join(os.getcwd(), 'images')
