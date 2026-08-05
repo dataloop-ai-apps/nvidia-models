@@ -32,10 +32,23 @@ class NvidiaBase(dl.BaseModelAdapter):
             "ngc_api_key": os.environ.get(ngc_api_key_secret_name),
             "ngc_org": os.environ.get(ngc_org_secret_name),
         }
+        
         super(NvidiaBase, self).__init__(model_entity)
 
     def get_cmd(self):
         raise NotImplementedError("Please implement 'get_cmd' method in {}".format(self.__class__.__name__))
+
+    @staticmethod
+    def _build_bash_cmd(cmd):
+        import shlex
+        for entrypoint in ['/nvidia_entrypoint.sh', '/opt/nvidia/entrypoint.sh', '/opt/entrypoint.sh']:
+            if os.path.isfile(entrypoint):
+                logger.info(f"Using NVIDIA entrypoint: {entrypoint}")
+                return ['bash', entrypoint] + cmd
+
+        bash_cmd = ' '.join(shlex.quote(c) for c in cmd)
+        logger.info(f"Running via bash (non-login shell): {bash_cmd}")
+        return ['bash', '-c', bash_cmd]
 
     def parse_results(self, predict_status):
         # Currently used by lpr-net
@@ -45,29 +58,39 @@ class NvidiaBase(dl.BaseModelAdapter):
     def _prepare_ngc_cli():
         os.makedirs(name='/tmp/ngccli', exist_ok=True)
         logger.info('downloading "https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip"')
-        wget_command = subprocess.Popen(
-            ['wget', 'https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip',
-             '-O', '/tmp/ngccli/ngccli_cat_linux.zip'],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        wget_command.wait()
-        if wget_command.returncode != 0:
-            raise ValueError('Failed downloading ngccli_cat_linux.zip')
-        logger.info('unzipping "ngccli_cat_linux.zip" updated files')
+        try:
+            result = subprocess.run(
+                ['wget', 'https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip',
+                '-O', '/tmp/ngccli/ngccli_cat_linux.zip'],
+                capture_output=True
+            )
+            if result.returncode != 0:
+                logger.error(f'Failed downloading ngccli_cat_linux.zip: {result.stderr.decode()}')
+                raise ValueError(f'Failed downloading ngccli_cat_linux.zip: {result.stderr.decode()}')
+        except FileNotFoundError:
+            logger.error('wget not found on system PATH')
+            raise RuntimeError('wget not found on system PATH')
+        except subprocess.SubprocessError as e:
+            logger.error(f'Failed to run wget: {e}')
+            raise RuntimeError(f'Failed to run wget: {e}')
+        logger.info('unzipping ngccli_cat_linux.zip')
         unzip_command = subprocess.Popen(
             ['unzip', '-u', '/tmp/ngccli/ngccli_cat_linux.zip', '-d', '/tmp/ngccli/'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        unzip_command.wait()
+        _, stderr_output = unzip_command.communicate()
         if unzip_command.returncode != 0:
-            raise ValueError('Failed unzipping ngccli_cat_linux.zip')
+            logger.error(f'Failed unzipping ngccli_cat_linux.zip: {stderr_output.decode()}')
+            raise ValueError(f'Failed unzipping ngccli_cat_linux.zip: {stderr_output.decode()}')
         logger.info('adding ngccli to system PATH environment variable')
         if "/tmp/ngccli/ngc-cli" not in os.environ["PATH"]:
             os.environ["PATH"] = "/tmp/ngccli/ngc-cli:{}".format(os.getenv("PATH", ""))
+        for tao_bin_dir in ['/opt/conda/bin', '/opt/conda/envs/tao/bin', '/usr/local/bin', os.path.expanduser('~/.local/bin')]:
+            if os.path.isdir(tao_bin_dir) and tao_bin_dir not in os.environ.get('PATH', ''):
+                os.environ['PATH'] = f"{tao_bin_dir}:{os.environ.get('PATH', '')}"
+        logger.info(f"PATH after setup: {os.environ.get('PATH')}")
 
     def load(self, local_path, **kwargs):
         model_name = self.model_entity.configuration.get("model_name")
@@ -82,12 +105,41 @@ class NvidiaBase(dl.BaseModelAdapter):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
+        logger.info("sending ngc config set command")
         input_data = (
             self.ngc_config["ngc_api_key"].encode() + b'\n\n' +
             self.ngc_config["ngc_org"].encode() + b'\n\n\n'
         )
         process.communicate(input=input_data)
+        logger.info("ngc config set command executed")
         os.makedirs('/tmp/tao_models', exist_ok=True)
+        logger.info("model directory created")
+
+        tao_pkg = subprocess.run(
+            ['find', '/', '-name', 'nvidia_tao_tf1', '-type', 'd', '-maxdepth', '10'],
+            capture_output=True, timeout=30
+        )
+        logger.info(f"nvidia_tao_tf1 package dirs: {tao_pkg.stdout.decode().splitlines()}")
+        which_result = subprocess.run(['which', 'yolo_v4_tiny'], capture_output=True, text=True)
+        logger.info(f"yolo_v4_tiny binary: {which_result.stdout.strip() or 'NOT FOUND in PATH'}")
+        which_smi = subprocess.run(['which', 'nvidia-smi'], capture_output=True, text=True)
+        logger.info(f"nvidia-smi binary: {which_smi.stdout.strip() or 'NOT FOUND in PATH'}")
+        nvidia_bin = subprocess.run(['ls', '/usr/local/nvidia/bin/'], capture_output=True, text=True)
+        logger.info(f"/usr/local/nvidia/bin: {nvidia_bin.stdout.strip() or nvidia_bin.stderr.strip()}")
+        logger.info(f"IS_GPU_AVAILABLE={os.environ.get('IS_GPU_AVAILABLE', 'NOT SET')}")
+        find_tao = subprocess.run(
+            ['find', '/opt', '/', '-name', 'yolo_v4_tiny', '-maxdepth', '8'],
+            capture_output=True, text=True, timeout=30
+        )
+        logger.info(f"yolo_v4_tiny locations: {find_tao.stdout.strip().splitlines()}")
+        conda_envs = subprocess.run(['ls', '/opt/conda/envs/'], capture_output=True, text=True)
+        logger.info(f"conda envs: {conda_envs.stdout.strip() or conda_envs.stderr.strip()}")
+        ls_local_bin = subprocess.run(['ls', '/usr/local/bin/'], capture_output=True, text=True)
+        logger.info(f"/usr/local/bin: {ls_local_bin.stdout.strip()}")
+        find_tao_cmd = subprocess.run(['find', '/', '-name', 'tao', '-type', 'f'], capture_output=True, text=True, timeout=30)
+        logger.info(f"tao binary locations: {find_tao_cmd.stdout.strip().splitlines()}")
+        find_yolo_broad = subprocess.run(['find', '/', '-name', '*yolo*', '-maxdepth', '15'], capture_output=True, text=True, timeout=60)
+        logger.info(f"yolo* files: {find_yolo_broad.stdout.strip().splitlines()[:20]}")
 
         logger.info('loading model')
         self.images_path = os.path.join(os.getcwd(), 'images')
@@ -130,14 +182,14 @@ class NvidiaBase(dl.BaseModelAdapter):
 
             os.makedirs(self.res_dir, exist_ok=True)
             cmd = self.get_cmd()
+            logger.info(f"cmd: {cmd}")
             predict_status = subprocess.Popen(
-                cmd,
+                self._build_bash_cmd(cmd),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
-            predict_status.wait()
+            stdout, stderr = predict_status.communicate()
             if predict_status.returncode != 0:
-                (stdout, stderr) = predict_status.communicate()
                 logger.info(f'STDOUT:\n{stdout}')
                 logger.info(f'STDERR:\n{stderr}')
                 raise Exception(f'Failed running nvidia cli command: {" ".join(cmd)}. more logs above')
